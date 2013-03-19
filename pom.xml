@@ -21,14 +21,14 @@
         <version>5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.ning.billing</groupId>
+    <groupId>com.github.torbinsky.billing</groupId>
     <artifactId>recurly-java-library</artifactId>
     <packaging>jar</packaging>
     <version>0.1.5-SNAPSHOT</version>
     <name>Recurly Java library</name>
     <description>Java library for Recurly</description>
     <url>http://github.com/torbinsky/recurly-java-library</url>
-    <inceptionYear>2012</inceptionYear>
+    <inceptionYear>2013</inceptionYear>
     <licenses>
         <license>
             <name>Apache License 2.0</name>
