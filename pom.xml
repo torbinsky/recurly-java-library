@@ -27,7 +27,7 @@
     <version>0.1.5-SNAPSHOT</version>
     <name>Recurly Java library</name>
     <description>Java library for Recurly</description>
-    <url>http://github.com/killbilling/recurly-java-library</url>
+    <url>http://github.com/torbinsky/recurly-java-library</url>
     <inceptionYear>2012</inceptionYear>
     <licenses>
         <license>
@@ -55,11 +55,15 @@
             <id>martin</id>
             <name>Martin Westhead</name>
         </developer>
+	<developer>
+		<id>torbinsky</id>
+		<name>Torben Werner</name>
+	</developer>
     </developers>
     <scm>
-        <connection>scm:git:git://github.com/killbilling/recurly-java-library.git</connection>
-        <developerConnection>scm:git:git@github.com:killbilling/recurly-java-library.git</developerConnection>
-        <url>http://github.com/killbilling/recurly-java-library/tree/master</url>
+        <connection>scm:git:git://github.com/torbinsky/recurly-java-library.git</connection>
+        <developerConnection>scm:git:git@github.com:torbinsky/recurly-java-library.git</developerConnection>
+        <url>http://github.com/torbinsky/recurly-java-library/tree/master</url>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -522,17 +526,8 @@
             </build>
         </profile>
     </profiles>
-    <mailingLists>
-        <mailingList>
-            <name>Killbilling users</name>
-            <subscribe>killbilling-users+subscribe@googlegroups.com</subscribe>
-            <unsubscribe>killbilling-users+unsubscribe@googlegroups.com</unsubscribe>
-            <post>killbilling-users@googlegroups.com</post>
-            <archive>http://groups.google.com/group/killbilling-users</archive>
-        </mailingList>
-    </mailingLists>
     <issueManagement>
         <system>Github</system>
-        <url>http://github.com/killbilling/recurly-java-library</url>
+        <url>http://github.com/torbinsky/recurly-java-library</url>
     </issueManagement>
 </project>

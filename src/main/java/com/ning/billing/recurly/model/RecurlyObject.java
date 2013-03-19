@@ -37,7 +37,7 @@ public abstract class RecurlyObject {
         // Booleans are represented as objects (e.g. <display_quantity type="boolean">false</display_quantity>), which Jackson
         // will interpret as an Object (Map), not Booleans.
         if (object instanceof Map) {
-            final Map map = (Map) object;
+            final Map<?,?> map = (Map<?,?>) object;
             if (map.keySet().size() == 1 && "boolean".equals(map.get("type"))) {
                 return Boolean.valueOf((String) map.get(""));
             }
@@ -62,7 +62,7 @@ public abstract class RecurlyObject {
         // Integers are represented as objects (e.g. <year type="integer">2015</year>), which Jackson
         // will interpret as an Object (Map), not Integers.
         if (object instanceof Map) {
-            final Map map = (Map) object;
+        	final Map<?,?> map = (Map<?,?>) object;
             if (map.keySet().size() == 2 && "integer".equals(map.get("type"))) {
                 return Integer.valueOf((String) map.get(""));
             }
@@ -79,7 +79,7 @@ public abstract class RecurlyObject {
         // DateTimes are represented as objects (e.g. <created_at type="datetime">2011-04-19T07:00:00Z</created_at>), which Jackson
         // will interpret as an Object (Map), not DateTimes.
         if (object instanceof Map) {
-            final Map map = (Map) object;
+        	final Map<?,?> map = (Map<?,?>) object;
             if (map.keySet().size() == 2 && "datetime".equals(map.get("type"))) {
                 return new DateTime(map.get(""));
             }
@@ -97,7 +97,7 @@ public abstract class RecurlyObject {
         // an element with a nil attribute (e.g. <city nil="nil"></city>) which Jackson will
         // interpret as an Object (Map), not a String.
         if (object instanceof Map) {
-            final Map map = (Map) object;
+        	final Map<?,?> map = (Map<?,?>) object;
             if (map.keySet().size() == 1 && NIL_STR.equals(map.get(NIL_STR))) {
                 return true;
             }
