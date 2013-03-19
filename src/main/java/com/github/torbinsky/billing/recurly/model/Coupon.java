@@ -124,8 +124,8 @@ public class Coupon extends RecurlyObject {
 		return appliesForMonths;
 	}
 
-	public void setAppliesForMonths(Integer appliesForMonths) {
-		this.appliesForMonths = appliesForMonths;
+	public void setAppliesForMonths(final Object appliesForMonths) {
+		this.appliesForMonths = integerOrNull(appliesForMonths);
 	}
 
 	@Override
