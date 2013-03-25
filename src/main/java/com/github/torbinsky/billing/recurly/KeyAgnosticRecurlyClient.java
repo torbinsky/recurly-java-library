@@ -24,6 +24,7 @@ import com.github.torbinsky.billing.recurly.model.Invoice;
 import com.github.torbinsky.billing.recurly.model.Invoices;
 import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Plans;
+import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.SubscriptionUpdate;
 import com.github.torbinsky.billing.recurly.model.Subscriptions;
@@ -258,6 +259,13 @@ public interface KeyAgnosticRecurlyClient {
 	 * @return The created {@link Transaction} object
 	 */
 	public Transaction createTransaction(final Transaction trans, final String apiKey);
+	
+	/**
+	 * @param accountCode Recurly account code
+	 * @param apiKey Recurly api key
+	 * @return an account's "active" {@link Redemption} or null 
+	 */
+	public Redemption getAccountRedemption(final String accountCode, final String apiKey);
 
 	// /////////////////////////////////////////////////////////////////////////
 	// User invoices

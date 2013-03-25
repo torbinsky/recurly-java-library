@@ -29,6 +29,7 @@ import com.github.torbinsky.billing.recurly.model.Invoice;
 import com.github.torbinsky.billing.recurly.model.Invoices;
 import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Plans;
+import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.SubscriptionUpdate;
 import com.github.torbinsky.billing.recurly.model.Subscriptions;
@@ -287,6 +288,18 @@ public class RecurlyClient extends RecurlyClientBase {
     public Transaction createTransaction(final Transaction trans) {
         return doPOST(Transactions.TRANSACTIONS_RESOURCE, trans, Transaction.class);
     }
+    
+	///////////////////////////////////////////////////////////////////////////
+	// Redemptions
+    /**
+     * @param accountCode Recurly account id
+     * @return the redemption associated with this account on success, null otherwise
+     */
+    public Redemption getAccountRedemption(final String accountCode){
+    	return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Redemption.REDEMPTIONS_RESOURCE,
+    			Redemption.class);
+    }
+	///////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////
     // User invoices
@@ -437,7 +450,8 @@ public class RecurlyClient extends RecurlyClientBase {
     public Coupon getCoupon(final String couponCode) {
         return doGET(Coupon.COUPON_RESOURCE + "/" + couponCode, Coupon.class);
     }
-
+    
+    
     ///////////////////////////////////////////////////////////////////////////
     //
     // Recurly.js API

@@ -24,6 +24,7 @@ import com.github.torbinsky.billing.recurly.model.Invoice;
 import com.github.torbinsky.billing.recurly.model.Invoices;
 import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Plans;
+import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.SubscriptionUpdate;
 import com.github.torbinsky.billing.recurly.model.Subscriptions;
@@ -241,6 +242,12 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	@Override
 	public synchronized void close() {
 		keyClient.close();
+	}
+
+	@Override
+	public Redemption getAccountRedemption(String accountCode, String apiKey) {
+		keyClient.setApiKey(apiKey);
+		return keyClient.getAccountRedemption(accountCode);
 	}
 
 
