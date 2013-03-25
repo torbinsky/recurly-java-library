@@ -70,40 +70,40 @@ public class Redemption extends RecurlyObject {
 		return singleUse;
 	}
 
-	public void setSingleUse(Boolean singleUse) {
-		this.singleUse = singleUse;
+	public void setSingleUse(final Object singleUse) {
+		this.singleUse = booleanOrNull(singleUse);
 	}
 
 	public Integer getTotalDiscountedInCents() {
 		return totalDiscountedInCents;
 	}
 
-	public void setTotalDiscountedInCents(Integer totalDiscountedInCents) {
-		this.totalDiscountedInCents = totalDiscountedInCents;
+	public void setTotalDiscountedInCents(final Object totalDiscountedInCents) {
+		this.totalDiscountedInCents = integerOrNull(totalDiscountedInCents);
 	}
 
 	public String getState() {
 		return state;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public void setState(final Object state) {
+		this.state = stringOrNull(state);
 	}
 
 	public String getCurrency() {
 		return currency;
 	}
 
-	public void setCurrency(String currency) {
-		this.currency = currency;
+	public void setCurrency(final Object currency) {
+		this.currency = stringOrNull(currency);
 	}
 
 	public DateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(DateTime createdAt) {
-		this.createdAt = createdAt;
+	public void setCreatedAt(final Object createdAt) {
+		this.createdAt = dateTimeOrNull(createdAt);
 	}
 
 	@Override
