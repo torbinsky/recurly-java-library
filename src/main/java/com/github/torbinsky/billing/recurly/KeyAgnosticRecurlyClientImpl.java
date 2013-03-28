@@ -250,5 +250,17 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 		return keyClient.getAccountRedemption(accountCode);
 	}
 
+	@Override
+	public Invoices getAccountInvoices(String accountCode, String stateQuery, String apiKey) {
+		keyClient.setApiKey(apiKey);
+		return keyClient.getAccountInvoices(accountCode, stateQuery);
+	}
+
+	@Override
+	public Invoices getAccountCollectedInvoices(String accountCode, String apiKey) {
+		keyClient.setApiKey(apiKey);
+		return keyClient.getAccountCollectedInvoices(accountCode);
+	}
+
 
 }

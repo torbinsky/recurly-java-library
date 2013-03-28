@@ -310,11 +310,37 @@ public class RecurlyClient extends RecurlyClientBase {
      * Returns the account's invoices
      *
      * @param accountCode recurly account id
+     * @param stateQuery the invoice state (default 'all')
+     * @return the invoices associated with this account on success, null otherwise
+     */
+    public Invoices getAccountInvoices(final String accountCode, String stateQuery) {
+        return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Invoices.INVOICES_RESOURCE,
+        			 "&state="+stateQuery,
+                     Invoices.class);
+    }
+    
+    /**
+     * Lookup an account's collected invoices
+     * <p/>
+     * Returns the account's collected invoices
+     *
+     * @param accountCode recurly account id
+     * @return the invoices associated with this account on success, null otherwise
+     */
+    public Invoices getAccountCollectedInvoices(final String accountCode) {
+        return getAccountInvoices(accountCode, "collected");
+    }
+    
+    /**
+     * Lookup an account's invoices
+     * <p/>
+     * Returns the account's invoices
+     *
+     * @param accountCode recurly account id
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountInvoices(final String accountCode) {
-        return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Invoices.INVOICES_RESOURCE,
-                     Invoices.class);
+        return getAccountInvoices(accountCode, "all");
     }
 
     ///////////////////////////////////////////////////////////////////////////

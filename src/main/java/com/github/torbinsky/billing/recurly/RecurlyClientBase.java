@@ -132,15 +132,22 @@ public abstract class RecurlyClientBase {
 	// /////////////////////////////////////////////////////////////////////////
 
 	protected <T> T doGET(final String resource, final Class<T> clazz) {
+		return doGET(resource, null, clazz);
+	}
+	
+	protected <T> T doGET(final String resource, String paramString, final Class<T> clazz) {
 		StringBuffer url = new StringBuffer(baseUrl);
 		url.append(resource);
 		if (resource != null && !resource.contains("?")) {
 			url.append("?");
 		} else {
 			url.append("&");
-			url.append("&");
 		}
 		url.append(getPageSizeGetParam());
+		
+		if(paramString != null){
+			url.append(paramString);
+		}
 
 		if (debug()) {
 			log.info("Msg to Recurly API [GET] :: URL : {}", url);

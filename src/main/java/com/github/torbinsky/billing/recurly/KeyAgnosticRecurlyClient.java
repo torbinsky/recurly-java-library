@@ -281,6 +281,27 @@ public interface KeyAgnosticRecurlyClient {
 	 *         otherwise
 	 */
 	public Invoices getAccountInvoices(final String accountCode, final String apiKey);
+	
+	/**
+     * Lookup an account's invoices
+     * <p/>
+     * Returns the account's invoices
+     *
+     * @param accountCode recurly account id
+     * @param stateQuery the invoice state (default 'all')
+     * @return the invoices associated with this account on success, null otherwise
+     */
+    public Invoices getAccountInvoices(final String accountCode, String stateQuery, String apiKey);
+    
+    /**
+     * Lookup an account's collected invoices
+     * <p/>
+     * Returns the account's collected invoices
+     *
+     * @param accountCode recurly account id
+     * @return the invoices associated with this account on success, null otherwise
+     */
+    public Invoices getAccountCollectedInvoices(final String accountCode, String apiKey);
 
 	// /////////////////////////////////////////////////////////////////////////
 
