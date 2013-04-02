@@ -20,6 +20,7 @@ import com.github.torbinsky.billing.recurly.model.Accounts;
 import com.github.torbinsky.billing.recurly.model.AddOn;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Coupon;
+import com.github.torbinsky.billing.recurly.model.CouponRedeem;
 import com.github.torbinsky.billing.recurly.model.Invoice;
 import com.github.torbinsky.billing.recurly.model.Invoices;
 import com.github.torbinsky.billing.recurly.model.Plan;
@@ -266,6 +267,8 @@ public interface KeyAgnosticRecurlyClient {
 	 * @return an account's "active" {@link Redemption} or null 
 	 */
 	public Redemption getAccountRedemption(final String accountCode, final String apiKey);
+	
+	public CouponRedeem redeemCoupon(final String couponCode, final CouponRedeem couponRedeem, final String apiKey);
 
 	// /////////////////////////////////////////////////////////////////////////
 	// User invoices

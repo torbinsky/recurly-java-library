@@ -25,6 +25,7 @@ import com.github.torbinsky.billing.recurly.model.Accounts;
 import com.github.torbinsky.billing.recurly.model.AddOn;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Coupon;
+import com.github.torbinsky.billing.recurly.model.CouponRedeem;
 import com.github.torbinsky.billing.recurly.model.Invoice;
 import com.github.torbinsky.billing.recurly.model.Invoices;
 import com.github.torbinsky.billing.recurly.model.Plan;
@@ -298,6 +299,15 @@ public class RecurlyClient extends RecurlyClientBase {
     public Redemption getAccountRedemption(final String accountCode){
     	return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Redemption.REDEMPTIONS_RESOURCE,
     			Redemption.class);
+    }
+    
+    /**
+     * Redeem a coupon
+     * <p/>
+     * Redeems a coupon with the matching code
+     */
+    public CouponRedeem redeemCoupon(final String couponCode, final CouponRedeem couponRedeem) {
+        return doPOST(Coupon.COUPON_RESOURCE + "/" + couponCode + CouponRedeem.COUPON_REDEEM_RESOURCE, couponRedeem, CouponRedeem.class);
     }
 	///////////////////////////////////////////////////////////////////////////
 

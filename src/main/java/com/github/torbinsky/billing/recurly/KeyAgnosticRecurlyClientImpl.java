@@ -20,6 +20,7 @@ import com.github.torbinsky.billing.recurly.model.Accounts;
 import com.github.torbinsky.billing.recurly.model.AddOn;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Coupon;
+import com.github.torbinsky.billing.recurly.model.CouponRedeem;
 import com.github.torbinsky.billing.recurly.model.Invoice;
 import com.github.torbinsky.billing.recurly.model.Invoices;
 import com.github.torbinsky.billing.recurly.model.Plan;
@@ -260,6 +261,12 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	public Invoices getAccountCollectedInvoices(String accountCode, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.getAccountCollectedInvoices(accountCode);
+	}
+
+	@Override
+	public CouponRedeem redeemCoupon(String couponCode, CouponRedeem couponRedeem, String apiKey) {
+		keyClient.setApiKey(apiKey);
+		return keyClient.redeemCoupon(couponCode, couponRedeem);
 	}
 
 
