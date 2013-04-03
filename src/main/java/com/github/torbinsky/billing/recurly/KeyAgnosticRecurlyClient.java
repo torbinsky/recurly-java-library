@@ -223,7 +223,7 @@ public interface KeyAgnosticRecurlyClient {
 	 * @return the newly created or update billing info object on success, null
 	 *         otherwise
 	 */
-	public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo, final String apiKey);
+	public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo, final String accountCode, final String apiKey);
 
 	/**
 	 * Lookup an account's billing info

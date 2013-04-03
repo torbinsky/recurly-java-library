@@ -247,8 +247,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param billingInfo billing info object to create or update
      * @return the newly created or update billing info object on success, null otherwise
      */
-    public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo) {
-        final String accountCode = (String)billingInfo.get("account_code");
+    public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo, String accountCode) {
         return doPUT(Account.ACCOUNT_RESOURCE + "/" + accountCode + BillingInfo.BILLING_INFO_RESOURCE,
                      billingInfo, BillingInfo.class);
     }

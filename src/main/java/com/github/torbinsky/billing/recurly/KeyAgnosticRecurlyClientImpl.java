@@ -122,9 +122,9 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public BillingInfo createOrUpdateBillingInfo(XmlPayloadMap<?, ?> billingInfo, String apiKey) {
+	public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo, final String accountCode, final String apiKey) {
 		keyClient.setApiKey(apiKey);
-		return keyClient.createOrUpdateBillingInfo(billingInfo);
+		return keyClient.createOrUpdateBillingInfo(billingInfo, accountCode);
 	}
 
 	@Override
