@@ -45,7 +45,7 @@ import com.ning.http.client.Response;
  * Basic/common client features such as managing the AsyncHttpClient etc...
  * 
  * @author twerner
- *
+ * 
  */
 public abstract class RecurlyClientBase {
 
@@ -136,7 +136,7 @@ public abstract class RecurlyClientBase {
 	protected <T> T doGET(final String resource, final Class<T> clazz) {
 		return doGET(resource, null, clazz);
 	}
-	
+
 	protected <T> T doGET(final String resource, String paramString, final Class<T> clazz) {
 		StringBuffer url = new StringBuffer(baseUrl);
 		url.append(resource);
@@ -146,8 +146,8 @@ public abstract class RecurlyClientBase {
 			url.append("&");
 		}
 		url.append(getPageSizeGetParam());
-		
-		if(paramString != null){
+
+		if (paramString != null) {
 			url.append(paramString);
 		}
 
@@ -188,8 +188,8 @@ public abstract class RecurlyClientBase {
 
 		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
 	}
-	
-	protected <T> T doPOST(final String resource, final XmlPayloadMap<?,?> payload, final Class<T> clazz) {
+
+	protected <T> T doPOST(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
 		final String xmlPayload;
 		try {
 			xmlPayload = convertPayloadMapToXmlString(payload);
@@ -205,7 +205,7 @@ public abstract class RecurlyClientBase {
 		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
 	}
 
-	protected <T> T doPUT(final String resource, final XmlPayloadMap<?,?> payload, final Class<T> clazz) {
+	protected <T> T doPUT(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
 		final String xmlPayload;
 		try {
 			xmlPayload = convertPayloadMapToXmlString(payload);
@@ -220,12 +220,10 @@ public abstract class RecurlyClientBase {
 
 		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
 	}
-	
-	protected String convertPayloadMapToXmlString(final XmlPayloadMap<?,?> xmlPayloadMap) throws JsonProcessingException{
-		String xmlPayload = xmlMapper.writeValueAsString(xmlPayloadMap);		
-		xmlPayload.replaceAll("XmlPayloadMap", xmlPayloadMap.getRootElementName());
-		
-		return xmlPayload;
+
+	protected String convertPayloadMapToXmlString(final XmlPayloadMap<?, ?> xmlPayloadMap) throws JsonProcessingException {
+		String xmlPayload = xmlMapper.writeValueAsString(xmlPayloadMap);
+		return xmlPayload.replaceAll("XmlPayloadMap", xmlPayloadMap.getRootElementName());
 	}
 
 	protected void doDELETE(final String resource) {
