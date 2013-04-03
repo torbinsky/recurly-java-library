@@ -32,10 +32,10 @@ import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Plans;
 import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
-import com.github.torbinsky.billing.recurly.model.SubscriptionUpdate;
 import com.github.torbinsky.billing.recurly.model.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 import com.github.torbinsky.billing.recurly.model.Transactions;
+import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 
 public class RecurlyClient extends RecurlyClientBase {
 
@@ -49,16 +49,32 @@ public class RecurlyClient extends RecurlyClientBase {
     public RecurlyClient(final String apiKey, final String host, final int port, final String version) {
         super(apiKey, host, port, version);
     }
+    
+    /* **************************************
+     * Generic CREATE/UPDATE 
+     * **************************************/
+    
+    public <T> T create(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz){
+    	return doPOST(path, payload, clazz);
+    }
+    
+    public <T> T update(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz){
+    	return doPUT(path, payload, clazz);
+    }
+    
+    /* **************************************
+     * 
+     * **************************************/
 
     /**
      * Create Account
      * <p/>
      * Creates a new account. You may optionally include billing information.
      *
-     * @param account account object
+     * @param account accountMap object
      * @return the newly created account object on success, null otherwise
      */
-    public Account createAccount(final Account account) {
+    public Account createAccount(final XmlPayloadMap<?, ?> account) {
         return doPOST(Account.ACCOUNT_RESOURCE, account, Account.class);
     }
 
@@ -94,7 +110,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param account     account object
      * @return the updated account object on success, null otherwise
      */
-    public Account updateAccount(final String accountCode, final Account account) {
+    public Account updateAccount(final String accountCode, final XmlPayloadMap<?, ?> account) {
         return doPUT(Account.ACCOUNT_RESOURCE + "/" + accountCode, account, Account.class);
     }
 
@@ -120,7 +136,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param subscription Subscription object
      * @return the newly created Subscription object on success, null otherwise
      */
-    public Subscription createSubscription(final Subscription subscription) {
+    public Subscription createSubscription(final XmlPayloadMap<?, ?> subscription) {
         return doPOST(Subscription.SUBSCRIPTION_RESOURCE,
                       subscription, Subscription.class);
     }
@@ -173,7 +189,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param uuid UUID of the subscription to update
      * @return Subscription the updated subscription
      */
-    public Subscription updateSubscription(final String uuid, final SubscriptionUpdate subscriptionUpdate) {
+    public Subscription updateSubscription(final String uuid, final XmlPayloadMap<?, ?> subscriptionUpdate) {
         return doPUT(Subscriptions.SUBSCRIPTIONS_RESOURCE
                      + "/" + uuid,
                      subscriptionUpdate,
@@ -231,10 +247,8 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param billingInfo billing info object to create or update
      * @return the newly created or update billing info object on success, null otherwise
      */
-    public BillingInfo createOrUpdateBillingInfo(final BillingInfo billingInfo) {
-        final String accountCode = billingInfo.getAccount().getAccountCode();
-        // Unset it to avoid confusing Recurly
-        billingInfo.setAccount(null);
+    public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo) {
+        final String accountCode = (String)billingInfo.get("account_code");
         return doPUT(Account.ACCOUNT_RESOURCE + "/" + accountCode + BillingInfo.BILLING_INFO_RESOURCE,
                      billingInfo, BillingInfo.class);
     }
@@ -286,7 +300,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param trans The {@link Transaction} to create
      * @return The created {@link Transaction} object
      */
-    public Transaction createTransaction(final Transaction trans) {
+    public Transaction createTransaction(final XmlPayloadMap<?, ?> trans) {
         return doPOST(Transactions.TRANSACTIONS_RESOURCE, trans, Transaction.class);
     }
     
@@ -306,7 +320,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * <p/>
      * Redeems a coupon with the matching code
      */
-    public CouponRedeem redeemCoupon(final String couponCode, final CouponRedeem couponRedeem) {
+    public CouponRedeem redeemCoupon(final String couponCode, final XmlPayloadMap<?, ?> couponRedeem) {
         return doPOST(Coupon.COUPON_RESOURCE + "/" + couponCode + CouponRedeem.COUPON_REDEEM_RESOURCE, couponRedeem, CouponRedeem.class);
     }
 	///////////////////////////////////////////////////////////////////////////
@@ -362,7 +376,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param plan The plan to create on recurly
      * @return the plan object as identified by the passed in ID
      */
-    public Plan createPlan(final Plan plan) {
+    public Plan createPlan(final XmlPayloadMap<?, ?> plan) {
         return doPOST(Plan.PLANS_RESOURCE, plan, Plan.class);
     }
 
@@ -409,7 +423,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param addOn    The {@link AddOn} to create within recurly
      * @return the {@link AddOn} object as identified by the passed in object
      */
-    public AddOn createPlanAddOn(final String planCode, final AddOn addOn) {
+    public AddOn createPlanAddOn(final String planCode, final XmlPayloadMap<?, ?> addOn) {
         return doPOST(Plan.PLANS_RESOURCE +
                       "/" +
                       planCode +
@@ -472,7 +486,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param coupon The coupon to create on recurly
      * @return the {@link Coupon} object
      */
-    public Coupon createCoupon(final Coupon coupon) {
+    public Coupon createCoupon(final XmlPayloadMap<?, ?> coupon) {
         return doPOST(Coupon.COUPON_RESOURCE, coupon, Coupon.class);
     }
 

@@ -27,10 +27,10 @@ import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Plans;
 import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
-import com.github.torbinsky.billing.recurly.model.SubscriptionUpdate;
 import com.github.torbinsky.billing.recurly.model.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 import com.github.torbinsky.billing.recurly.model.Transactions;
+import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 
 /**
  * A concrete implementation of the {@link KeyAgnosticRecurlyClient} interface
@@ -50,7 +50,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Account createAccount(Account account, String apiKey) {
+	public Account createAccount(XmlPayloadMap<?, ?> account, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.createAccount(account);
 	}
@@ -68,7 +68,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Account updateAccount(String accountCode, Account account, String apiKey) {
+	public Account updateAccount(String accountCode, XmlPayloadMap<?, ?> account, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.updateAccount(accountCode, account);
 	}
@@ -80,7 +80,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Subscription createSubscription(Subscription subscription, String apiKey) {
+	public Subscription createSubscription(XmlPayloadMap<?, ?> subscription, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.createSubscription(subscription);
 	}
@@ -104,7 +104,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Subscription updateSubscription(String uuid, SubscriptionUpdate subscriptionUpdate, String apiKey) {
+	public Subscription updateSubscription(String uuid, XmlPayloadMap<?, ?> subscriptionUpdate, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.updateSubscription(uuid, subscriptionUpdate);
 	}
@@ -122,7 +122,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public BillingInfo createOrUpdateBillingInfo(BillingInfo billingInfo, String apiKey) {
+	public BillingInfo createOrUpdateBillingInfo(XmlPayloadMap<?, ?> billingInfo, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.createOrUpdateBillingInfo(billingInfo);
 	}
@@ -146,7 +146,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Transaction createTransaction(Transaction trans, String apiKey) {
+	public Transaction createTransaction(XmlPayloadMap<?, ?> trans, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.createTransaction(trans);
 	}
@@ -158,7 +158,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Plan createPlan(Plan plan, String apiKey) {
+	public Plan createPlan(XmlPayloadMap<?, ?> plan, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.createPlan(plan);
 	}
@@ -182,7 +182,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public AddOn createPlanAddOn(String planCode, AddOn addOn, String apiKey) {
+	public AddOn createPlanAddOn(String planCode, XmlPayloadMap<?, ?> addOn, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.createPlanAddOn(planCode, addOn);
 	}
@@ -206,7 +206,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Coupon createCoupon(Coupon coupon, String apiKey) {
+	public Coupon createCoupon(XmlPayloadMap<?, ?> coupon, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.createCoupon(coupon);
 	}
@@ -264,9 +264,21 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public CouponRedeem redeemCoupon(String couponCode, CouponRedeem couponRedeem, String apiKey) {
+	public CouponRedeem redeemCoupon(String couponCode, XmlPayloadMap<?, ?> couponRedeem, String apiKey) {
 		keyClient.setApiKey(apiKey);
 		return keyClient.redeemCoupon(couponCode, couponRedeem);
+	}
+
+	@Override
+	public <T> T create(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz, String apiKey) {
+		keyClient.setApiKey(apiKey);
+		return keyClient.create(path, payload, clazz);
+	}
+
+	@Override
+	public <T> T update(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz, String apiKey) {
+		keyClient.setApiKey(apiKey);
+		return keyClient.update(path, payload, clazz);
 	}
 
 

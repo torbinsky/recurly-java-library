@@ -27,10 +27,10 @@ import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Plans;
 import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
-import com.github.torbinsky.billing.recurly.model.SubscriptionUpdate;
 import com.github.torbinsky.billing.recurly.model.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 import com.github.torbinsky.billing.recurly.model.Transactions;
+import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 
 /**
  * A Recurly client which allows the API key to be specified for each API call.
@@ -39,6 +39,18 @@ import com.github.torbinsky.billing.recurly.model.Transactions;
  *
  */
 public interface KeyAgnosticRecurlyClient {
+	
+	/* **************************************
+     * Generic CREATE/UPDATE 
+     * **************************************/
+	
+	public <T> T create(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz, String apiKey);
+    
+    public <T> T update(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz, String apiKey);
+    
+    /* **************************************
+     * 
+     * **************************************/
 
 	/**
 	 * Open the underlying http client
@@ -59,7 +71,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            account object
 	 * @return the newly created account object on success, null otherwise
 	 */
-	public Account createAccount(final Account account, final String apiKey);
+	public Account createAccount(final XmlPayloadMap<?, ?> account, final String apiKey);
 
 	/**
 	 * Get Accounts
@@ -92,7 +104,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            account object
 	 * @return the updated account object on success, null otherwise
 	 */
-	public Account updateAccount(final String accountCode, final Account account, final String apiKey);
+	public Account updateAccount(final String accountCode, final XmlPayloadMap<?, ?> account, final String apiKey);
 
 	/**
 	 * Close Account
@@ -117,7 +129,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            Subscription object
 	 * @return the newly created Subscription object on success, null otherwise
 	 */
-	public Subscription createSubscription(final Subscription subscription, final String apiKey);
+	public Subscription createSubscription(final XmlPayloadMap<?, ?> subscription, final String apiKey);
 
 	/**
 	 * Get a particular {@link Subscription} by it's UUID
@@ -163,7 +175,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            UUID of the subscription to update
 	 * @return Subscription the updated subscription
 	 */
-	public Subscription updateSubscription(final String uuid, final SubscriptionUpdate subscriptionUpdate, final String apiKey);
+	public Subscription updateSubscription(final String uuid, final XmlPayloadMap<?, ?> subscriptionUpdate, final String apiKey);
 
 	/**
 	 * Get the subscriptions for an {@link Account}.
@@ -211,7 +223,7 @@ public interface KeyAgnosticRecurlyClient {
 	 * @return the newly created or update billing info object on success, null
 	 *         otherwise
 	 */
-	public BillingInfo createOrUpdateBillingInfo(final BillingInfo billingInfo, final String apiKey);
+	public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo, final String apiKey);
 
 	/**
 	 * Lookup an account's billing info
@@ -259,7 +271,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            The {@link Transaction} to create
 	 * @return The created {@link Transaction} object
 	 */
-	public Transaction createTransaction(final Transaction trans, final String apiKey);
+	public Transaction createTransaction(final XmlPayloadMap<?, ?> trans, final String apiKey);
 	
 	/**
 	 * @param accountCode Recurly account code
@@ -268,7 +280,7 @@ public interface KeyAgnosticRecurlyClient {
 	 */
 	public Redemption getAccountRedemption(final String accountCode, final String apiKey);
 	
-	public CouponRedeem redeemCoupon(final String couponCode, final CouponRedeem couponRedeem, final String apiKey);
+	public CouponRedeem redeemCoupon(final String couponCode, final XmlPayloadMap<?, ?> couponRedeem, final String apiKey);
 
 	// /////////////////////////////////////////////////////////////////////////
 	// User invoices
@@ -316,7 +328,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            The plan to create on recurly
 	 * @return the plan object as identified by the passed in ID
 	 */
-	public Plan createPlan(final Plan plan, final String apiKey);
+	public Plan createPlan(final XmlPayloadMap<?, ?> plan, final String apiKey);
 
 	/**
 	 * Get a Plan's details
@@ -357,7 +369,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            The {@link AddOn} to create within recurly
 	 * @return the {@link AddOn} object as identified by the passed in object
 	 */
-	public AddOn createPlanAddOn(final String planCode, final AddOn addOn, final String apiKey);
+	public AddOn createPlanAddOn(final String planCode, final XmlPayloadMap<?, ?> addOn, final String apiKey);
 
 	/**
 	 * Get an AddOn's details
@@ -401,7 +413,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *            The coupon to create on recurly
 	 * @return the {@link Coupon} object
 	 */
-	public Coupon createCoupon(final Coupon coupon, final String apiKey);
+	public Coupon createCoupon(final XmlPayloadMap<?, ?> coupon, final String apiKey);
 
 	/**
 	 * Get a Coupon

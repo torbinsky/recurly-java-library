@@ -25,6 +25,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.github.torbinsky.billing.recurly.model.RecurlyObject;
+import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
@@ -185,6 +187,45 @@ public abstract class RecurlyClientBase {
 		}
 
 		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+	}
+	
+	protected <T> T doPOST(final String resource, final XmlPayloadMap<?,?> payload, final Class<T> clazz) {
+		final String xmlPayload;
+		try {
+			xmlPayload = convertPayloadMapToXmlString(payload);
+			if (debug()) {
+				log.info("Msg to Recurly API [POST]:: URL : {}", baseUrl + resource);
+				log.info("Payload for [POST]:: {}", xmlPayload);
+			}
+		} catch (IOException e) {
+			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
+			return null;
+		}
+
+		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
+	}
+
+	protected <T> T doPUT(final String resource, final XmlPayloadMap<?,?> payload, final Class<T> clazz) {
+		final String xmlPayload;
+		try {
+			xmlPayload = convertPayloadMapToXmlString(payload);
+			if (debug()) {
+				log.info("Msg to Recurly API [PUT]:: URL : {}", baseUrl + resource);
+				log.info("Payload for [PUT]:: {}", xmlPayload);
+			}
+		} catch (IOException e) {
+			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
+			return null;
+		}
+
+		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+	}
+	
+	protected String convertPayloadMapToXmlString(final XmlPayloadMap<?,?> xmlPayloadMap) throws JsonProcessingException{
+		String xmlPayload = xmlMapper.writeValueAsString(xmlPayloadMap);		
+		xmlPayload.replaceAll("XmlPayloadMap", xmlPayloadMap.getRootElementName());
+		
+		return xmlPayload;
 	}
 
 	protected void doDELETE(final String resource) {
