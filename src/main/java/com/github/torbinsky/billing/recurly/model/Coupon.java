@@ -17,9 +17,14 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Class that represents the Concept of a Coupon within the Recurly API.
@@ -29,6 +34,12 @@ public class Coupon extends RecurlyObject {
 
 	@XmlTransient
 	public static final String COUPON_RESOURCE = "/coupons";
+	
+	@XmlTransient
+    public static final Pattern COUPON_CODE_PATTERN = Pattern.compile(COUPON_RESOURCE + "/(.+)$");
+	
+	@XmlTransient
+    private String href;
 
 	@XmlElement(name = "name")
 	private String name;
@@ -82,6 +93,25 @@ public class Coupon extends RecurlyObject {
 	public void setCouponCode(final Object couponCode) {
 		this.couponCode = stringOrNull(couponCode);
 	}
+	
+	// Note: I'm not sure why @JsonIgnore is required here - shouldn't @XmlTransient be enough?
+    @JsonIgnore
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(final Object href) {
+        this.href = stringOrNull(href);
+
+        // If there was an href try to parse out the account code since
+        // Recurly doesn't currently provide it elsewhere.
+        if (this.href != null) {
+            Matcher m = COUPON_CODE_PATTERN.matcher(this.href);
+            if (m.find()) {
+                setCouponCode(m.group(1));
+            }
+        }
+    }
 
 	/**
 	 * Sets the discount type for a {@link Coupon}
@@ -133,6 +163,7 @@ public class Coupon extends RecurlyObject {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Coupon");
 		sb.append("{name='").append(name).append('\'');
+		sb.append(", href='").append(href).append('\'');
 		sb.append(", couponCode='").append(couponCode).append('\'');
 		sb.append(", discountType='").append(discountType).append('\'');
 		sb.append(", discountPercent='").append(discountPercent).append('\'');
@@ -164,6 +195,9 @@ public class Coupon extends RecurlyObject {
 		if (name != null ? !name.equals(coupon.name) : coupon.name != null) {
 			return false;
 		}
+		if (href != null ? !href.equals(coupon.href) : coupon.href != null) {
+			return false;
+		}
 		
 		if (appliesForMonths != null ? !appliesForMonths.equals(coupon.appliesForMonths) : coupon.appliesForMonths != null) {
 			return false;
@@ -175,6 +209,7 @@ public class Coupon extends RecurlyObject {
 	@Override
 	public int hashCode() {
 		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + (href != null ? href.hashCode() : 0);
 		result = 31 * result + (couponCode != null ? couponCode.hashCode() : 0);
 		result = 31 * result + (discountType != null ? discountType.hashCode() : 0);
 		result = 31 * result + (discountPercent != null ? discountPercent.hashCode() : 0);
