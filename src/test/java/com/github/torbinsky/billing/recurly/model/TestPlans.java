@@ -21,7 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.torbinsky.billing.recurly.model.Plan;
-import com.github.torbinsky.billing.recurly.model.Plans;
+import com.github.torbinsky.billing.recurly.model.list.Plans;
 
 public class TestPlans extends TestModelBase {
 

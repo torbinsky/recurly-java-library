@@ -14,16 +14,19 @@
  * under the License.
  */
 
-package com.github.torbinsky.billing.recurly.model;
+package com.github.torbinsky.billing.recurly.model.list;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.torbinsky.billing.recurly.model.RecurlyObject;
 
 /**
  * Container for a collection of objects (e.g. accounts, coupons, plans, ...)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class RecurlyObjects<T extends RecurlyObject> {
+	@JsonIgnore
 	public abstract List<T> getObjects();
 }

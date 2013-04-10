@@ -20,6 +20,8 @@ import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.github.torbinsky.billing.recurly.model.list.Accounts;
+
 public class TestAccounts extends TestModelBase {
 
     @Test(groups = "fast")

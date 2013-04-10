@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.github.torbinsky.billing.recurly.model;
+package com.github.torbinsky.billing.recurly.model.list;
 
 import java.util.List;
 
@@ -22,21 +22,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "subscriptions")
-public class Subscriptions extends RecurlyObjects<Subscription> {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.torbinsky.billing.recurly.model.Invoice;
+
+@XmlRootElement(name = "invoices")
+public class Invoices extends RecurlyObjects<Invoice> {
 
     @XmlTransient
-    public static final String SUBSCRIPTIONS_RESOURCE = "/subscriptions";
+    public static final String INVOICES_RESOURCE = "/invoices";
     
-    private List<Subscription> subscriptions;
+    @JsonIgnore
+    private List<Invoice> invoices;
 
 	@Override
-	@XmlElement(name = "subscription")
-	public List<Subscription> getObjects() {
-		return subscriptions;
+	@XmlElement(name = "invoice")
+	public List<Invoice> getObjects() {
+		return invoices;
 	}
 	
-	public void setAccounts(List<Subscription> subscriptionList) {
-        this.subscriptions = subscriptionList;
+	@JsonIgnore
+	public void setInvoices(List<Invoice> invoiceList) {
+        this.invoices = invoiceList;
     }
 }

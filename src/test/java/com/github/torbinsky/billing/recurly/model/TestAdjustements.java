@@ -21,7 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.torbinsky.billing.recurly.model.Adjustment;
-import com.github.torbinsky.billing.recurly.model.Adjustments;
+import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 
 public class TestAdjustements extends TestModelBase {
 

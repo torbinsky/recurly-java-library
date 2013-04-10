@@ -21,7 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.github.torbinsky.billing.recurly.model.Invoice;
-import com.github.torbinsky.billing.recurly.model.Invoices;
+import com.github.torbinsky.billing.recurly.model.list.Invoices;
 
 public class TestInvoices extends TestModelBase {
 

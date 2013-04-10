@@ -266,7 +266,7 @@ public abstract class RecurlyClientBase {
 							if (response.getStatusCode() >= 300) {
 								log.warn("Recurly error whilst calling: {}", response.getUri());
 								log.warn("Recurly error: {}", response.getResponseBody());
-								return null;
+								throw new RecurlyAPIException("Recurly error: " + response.getResponseBody());
 							}
 			
 							final InputStream in = response.getResponseBodyAsStream();
@@ -285,7 +285,13 @@ public abstract class RecurlyClientBase {
 			log.warn("Error while calling Recurly", e);
 			throw new RecurlyAPIException("Error while calling Recurly", e);
 		} catch (ExecutionException e) {
-			log.error("Execution error", e);
+			Throwable t;
+			// Unwrap any of the API exceptions
+			while((t = e.getCause()) != null){
+				if(e.getCause() instanceof RecurlyAPIException){
+					throw (RecurlyAPIException)t;
+				}
+			}
 			throw new RecurlyException("Execution error", e);
 		} catch (InterruptedException e) {
 			log.error("Interrupted while calling Recurly", e);

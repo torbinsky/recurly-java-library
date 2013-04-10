@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.github.torbinsky.billing.recurly.model;
+package com.github.torbinsky.billing.recurly.model.list;
 
 import java.util.List;
 
@@ -22,12 +22,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.torbinsky.billing.recurly.model.Plan;
+
 @XmlRootElement(name = "plans")
 public class Plans extends RecurlyObjects<Plan> {
 
     @XmlTransient
     public static final String PLANS_RESOURCE = "/plans";
     
+    @JsonIgnore
     private List<Plan> plans;
 
 	@Override
@@ -36,6 +40,7 @@ public class Plans extends RecurlyObjects<Plan> {
 		return plans;
 	}
 	
+	@JsonIgnore
 	public void setPlans(List<Plan> planList) {
         this.plans = planList;
     }

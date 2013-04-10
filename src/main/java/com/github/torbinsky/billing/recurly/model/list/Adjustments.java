@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.github.torbinsky.billing.recurly.model;
+package com.github.torbinsky.billing.recurly.model.list;
 
 import java.util.List;
 
@@ -22,21 +22,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "plans")
-public class Accounts extends RecurlyObjects<Account> {
-	
-	@XmlTransient
-	public static final String ACCOUNTS_RESOURCE = "/accounts";
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.torbinsky.billing.recurly.model.Adjustment;
 
-	private List<Account> accounts;
+@XmlRootElement(name = "adjustments")
+public class Adjustments extends RecurlyObjects<Adjustment> {
+
+    @XmlTransient
+    public static final String INVOICES_RESOURCE = "/adjustments";
+    
+    @JsonIgnore
+    private List<Adjustment> adjustments;
 
 	@Override
-	@XmlElement(name = "account")
-	public List<Account> getObjects() {
-		return accounts;
+	@XmlElement(name = "adjustment")
+	public List<Adjustment> getObjects() {
+		return adjustments;
 	}
 	
-	public void setAccounts(List<Account> accountList) {
-        this.accounts = accountList;
+	@JsonIgnore
+	public void setAccounts(List<Adjustment> adjustmentList) {
+        this.adjustments = adjustmentList;
     }
 }

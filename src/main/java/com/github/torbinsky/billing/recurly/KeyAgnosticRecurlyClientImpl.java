@@ -16,20 +16,20 @@
 package com.github.torbinsky.billing.recurly;
 
 import com.github.torbinsky.billing.recurly.model.Account;
-import com.github.torbinsky.billing.recurly.model.Accounts;
 import com.github.torbinsky.billing.recurly.model.AddOn;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Coupon;
 import com.github.torbinsky.billing.recurly.model.CouponRedeem;
 import com.github.torbinsky.billing.recurly.model.Invoice;
-import com.github.torbinsky.billing.recurly.model.Invoices;
 import com.github.torbinsky.billing.recurly.model.Plan;
-import com.github.torbinsky.billing.recurly.model.Plans;
 import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
-import com.github.torbinsky.billing.recurly.model.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.Transaction;
-import com.github.torbinsky.billing.recurly.model.Transactions;
+import com.github.torbinsky.billing.recurly.model.list.Accounts;
+import com.github.torbinsky.billing.recurly.model.list.Invoices;
+import com.github.torbinsky.billing.recurly.model.list.Plans;
+import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
+import com.github.torbinsky.billing.recurly.model.list.Transactions;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 
 /**
