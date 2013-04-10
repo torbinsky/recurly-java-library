@@ -285,9 +285,9 @@ public abstract class RecurlyClientBase {
 			log.warn("Error while calling Recurly", e);
 			throw new RecurlyAPIException("Error while calling Recurly", e);
 		} catch (ExecutionException e) {
-			Throwable t;
+			Throwable t = e;
 			// Unwrap any of the API exceptions
-			while((t = e.getCause()) != null){
+			while((t = t.getCause()) != null){
 				if(e.getCause() instanceof RecurlyAPIException){
 					throw (RecurlyAPIException)t;
 				}
