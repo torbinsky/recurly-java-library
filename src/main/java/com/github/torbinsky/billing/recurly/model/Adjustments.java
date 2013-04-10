@@ -16,6 +16,9 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -24,4 +27,16 @@ public class Adjustments extends RecurlyObjects<Adjustment> {
 
     @XmlTransient
     public static final String INVOICES_RESOURCE = "/adjustments";
+    
+    private List<Adjustment> adjustments;
+
+	@Override
+	@XmlElement(name = "adjustment")
+	public List<Adjustment> getObjects() {
+		return adjustments;
+	}
+	
+	public void setAccounts(List<Adjustment> adjustmentList) {
+        this.adjustments = adjustmentList;
+    }
 }

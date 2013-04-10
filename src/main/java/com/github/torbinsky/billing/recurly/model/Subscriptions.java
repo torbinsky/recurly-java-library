@@ -16,6 +16,9 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -24,4 +27,16 @@ public class Subscriptions extends RecurlyObjects<Subscription> {
 
     @XmlTransient
     public static final String SUBSCRIPTIONS_RESOURCE = "/subscriptions";
+    
+    private List<Subscription> subscriptions;
+
+	@Override
+	@XmlElement(name = "subscription")
+	public List<Subscription> getObjects() {
+		return subscriptions;
+	}
+	
+	public void setAccounts(List<Subscription> subscriptionList) {
+        this.subscriptions = subscriptionList;
+    }
 }

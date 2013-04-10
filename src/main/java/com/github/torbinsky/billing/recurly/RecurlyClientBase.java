@@ -36,6 +36,9 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.github.torbinsky.billing.recurly.exception.RecurlyAPIException;
+import com.github.torbinsky.billing.recurly.exception.RecurlyException;
+import com.github.torbinsky.billing.recurly.exception.RecurlySerializationException;
 import com.github.torbinsky.billing.recurly.model.RecurlyObject;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 import com.ning.http.client.AsyncCompletionHandler;
@@ -56,7 +59,7 @@ public abstract class RecurlyClientBase {
 	public static final String RECURLY_DEBUG_KEY = "recurly.debug";
 	public static final String RECURLY_PAGE_SIZE_KEY = "recurly.page.size";
 
-	protected static final Integer DEFAULT_PAGE_SIZE = new Integer(20);
+	protected static final Integer DEFAULT_PAGE_SIZE = new Integer(200);
 	protected static final String PER_PAGE = "per_page=";
 
 	public static final String FETCH_RESOURCE = "/recurly_js/result";
@@ -87,7 +90,7 @@ public abstract class RecurlyClientBase {
 		return PER_PAGE + getPageSize().toString();
 	}
 
-	private final XmlMapper xmlMapper = new XmlMapper();
+	protected final XmlMapper xmlMapper = new XmlMapper();
 
 	private String key;
 	private final String baseUrl;
@@ -181,7 +184,7 @@ public abstract class RecurlyClientBase {
 			}
 		} catch (IOException e) {
 			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
-			return null;
+			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
 		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
@@ -197,7 +200,7 @@ public abstract class RecurlyClientBase {
 			}
 		} catch (IOException e) {
 			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
-			return null;
+			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
 		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
@@ -213,7 +216,7 @@ public abstract class RecurlyClientBase {
 			}
 		} catch (IOException e) {
 			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
-			return null;
+			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
 		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
@@ -229,7 +232,7 @@ public abstract class RecurlyClientBase {
 			}
 		} catch (IOException e) {
 			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
-			return null;
+			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
 		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
@@ -250,7 +253,7 @@ public abstract class RecurlyClientBase {
 			return deserialize(result, clazz);
 		} catch (IOException e) {
 			log.warn("Error while calling Recurly", e);
-			return null;
+			throw new RecurlySerializationException("Error while calling Recurly", e);
 		}		
 	}
 	
@@ -280,13 +283,13 @@ public abstract class RecurlyClientBase {
 					}).get();
 		} catch (IOException e) {
 			log.warn("Error while calling Recurly", e);
-			return null;
+			throw new RecurlyAPIException("Error while calling Recurly", e);
 		} catch (ExecutionException e) {
 			log.error("Execution error", e);
-			return null;
+			throw new RecurlyException("Execution error", e);
 		} catch (InterruptedException e) {
 			log.error("Interrupted while calling Recurly", e);
-			return null;
+			throw new RecurlyException("Interrupted while calling Recurly", e);
 		}
 	}
 

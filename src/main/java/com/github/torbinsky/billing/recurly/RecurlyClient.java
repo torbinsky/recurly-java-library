@@ -39,7 +39,7 @@ import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 
 public class RecurlyClient extends RecurlyClientBase {
 
-    @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private static final Logger log = LoggerFactory.getLogger(RecurlyClient.class);
 
     public RecurlyClient(final String apiKey) {
@@ -207,8 +207,7 @@ public class RecurlyClient extends RecurlyClientBase {
     public Subscriptions getAccountSubscriptions(final String accountCode) {
         return doGET(Account.ACCOUNT_RESOURCE
                      + "/" + accountCode
-                     + Subscriptions.SUBSCRIPTIONS_RESOURCE,
-                     Subscriptions.class);
+                     + Subscriptions.SUBSCRIPTIONS_RESOURCE, Subscriptions.class);
     }
 
     /**

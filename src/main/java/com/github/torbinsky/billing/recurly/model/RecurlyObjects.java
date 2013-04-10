@@ -16,7 +16,7 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -24,6 +24,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Container for a collection of objects (e.g. accounts, coupons, plans, ...)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class RecurlyObjects<T extends RecurlyObject> extends ArrayList<T> {
-
+public abstract class RecurlyObjects<T extends RecurlyObject> {
+	public abstract List<T> getObjects();
 }

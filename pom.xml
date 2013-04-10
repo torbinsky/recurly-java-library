@@ -24,7 +24,7 @@
     <groupId>com.github.torbinsky.billing</groupId>
     <artifactId>recurly-java-library</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.16-SNAPSHOT</version>
+    <version>0.1.17-SNAPSHOT</version>
     <name>Recurly Java library</name>
     <description>Java library for Recurly</description>
     <url>http://github.com/torbinsky/recurly-java-library</url>
@@ -131,12 +131,6 @@
             <version>6.3.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-		  <!-- jsoup HTML parser library @ http://jsoup.org/ -->
-		  <groupId>org.jsoup</groupId>
-		  <artifactId>jsoup</artifactId>
-		  <version>1.7.2</version>
-		</dependency>
     </dependencies>
     <build>
         <plugins>

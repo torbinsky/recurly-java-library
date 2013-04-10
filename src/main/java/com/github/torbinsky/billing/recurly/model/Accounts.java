@@ -16,12 +16,27 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name = "plans")
 public class Accounts extends RecurlyObjects<Account> {
+	
+	@XmlTransient
+	public static final String ACCOUNTS_RESOURCE = "/accounts";
 
-    @XmlTransient
-    public static final String ACCOUNTS_RESOURCE = "/accounts";
+	private List<Account> accounts;
+
+	@Override
+	@XmlElement(name = "account")
+	public List<Account> getObjects() {
+		return accounts;
+	}
+	
+	public void setAccounts(List<Account> accountList) {
+        this.accounts = accountList;
+    }
 }
