@@ -68,9 +68,9 @@ public class TestInvoices extends TestModelBase {
                                     + "</invoices>";
 
         final Invoices invoices = xmlMapper.readValue(invoicesData, Invoices.class);
-        Assert.assertEquals(invoices.size(), 1);
+        Assert.assertEquals(invoices.getObjects().size(), 1);
 
-        final Invoice invoice = invoices.get(0);
+        final Invoice invoice = invoices.getObjects().get(0);
         Assert.assertEquals(invoice.getAccount().getHref(), "https://api.recurly.com/v2/accounts/1");
         Assert.assertEquals(invoice.getUuid(), "421f7b7d414e4c6792938e7c49d552e9");
         Assert.assertEquals(invoice.getState(), "open");

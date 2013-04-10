@@ -62,9 +62,9 @@ public class TestPlans extends TestModelBase {
                                  "</plans>";
 
         final Plans plans = xmlMapper.readValue(plansData, Plans.class);
-        Assert.assertEquals(plans.size(), 1);
+        Assert.assertEquals(plans.getObjects().size(), 1);
 
-        final Plan plan = plans.get(0);
+        final Plan plan = plans.getObjects().get(0);
         Assert.assertEquals(plan.getPlanCode(), "gold");
         Assert.assertEquals(plan.getName(), "Gold plan");
         Assert.assertEquals((int) plan.getPlanIntervalLength(), 1);

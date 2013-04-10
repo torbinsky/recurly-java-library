@@ -51,9 +51,9 @@ public class TestAdjustements extends TestModelBase {
                                        "</adjustments>";
 
         final Adjustments adjustments = xmlMapper.readValue(adjustmentsData, Adjustments.class);
-        Assert.assertEquals(adjustments.size(), 1);
+        Assert.assertEquals(adjustments.getObjects().size(), 1);
 
-        final Adjustment adjustment = adjustments.get(0);
+        final Adjustment adjustment = adjustments.getObjects().get(0);
 
         Assert.assertEquals(adjustment.getAccount().getHref(), "https://api.recurly.com/v2/accounts/100");
         Assert.assertEquals(adjustment.getUuid(), "626db120a84102b1809909071c701c60");

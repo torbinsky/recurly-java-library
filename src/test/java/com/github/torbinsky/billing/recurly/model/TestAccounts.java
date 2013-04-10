@@ -20,9 +20,6 @@ import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.github.torbinsky.billing.recurly.model.Account;
-import com.github.torbinsky.billing.recurly.model.Accounts;
-
 public class TestAccounts extends TestModelBase {
 
     @Test(groups = "fast")
@@ -51,9 +48,9 @@ public class TestAccounts extends TestModelBase {
                                     "</accounts>";
 
         final Accounts accounts = xmlMapper.readValue(accountsData, Accounts.class);
-        Assert.assertEquals(accounts.size(), 1);
+        Assert.assertEquals(accounts.getObjects().size(), 1);
 
-        final Account account = accounts.get(0);
+        final Account account = accounts.getObjects().get(0);
         Assert.assertEquals(account.getHref(), "https://api.recurly.com/v2/accounts/1");
         Assert.assertEquals(account.getAccountCode(), "1");
         Assert.assertEquals(account.getState(), "active");
