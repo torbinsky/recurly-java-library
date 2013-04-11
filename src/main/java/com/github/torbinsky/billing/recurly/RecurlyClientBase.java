@@ -379,7 +379,6 @@ public abstract class RecurlyClientBase {
 		// header...
 
 		String header = response.getHeader(RECURLY_PAGINATION_HEADER);
-		System.out.println("HEADER:\n{\n" + header + "\n}\n");
 		if (header != null) {
 			/*
 			 * EXAMPLE:
