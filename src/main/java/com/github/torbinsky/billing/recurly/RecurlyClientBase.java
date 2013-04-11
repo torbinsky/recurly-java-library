@@ -322,9 +322,9 @@ public abstract class RecurlyClientBase {
 	protected List<String> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
 		final String requestKey = getApiKey();
 		final RecurlyAPICallResults<String> results = doSinglePageRecurlySafeCall(builder, new RecurlyAPICallResults<String>(), requestKey);
-		do{
+		while(results.hasNextPage()){
 			doSinglePageRecurlySafeCall(client.prepareGet(results.getNextPageUrl()), results, requestKey);
-		}while(results.hasNextPage());
+		}
 		
 		return results.getResults();
 	}
