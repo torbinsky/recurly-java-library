@@ -17,6 +17,9 @@ package com.github.torbinsky.billing.recurly;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
@@ -53,6 +56,8 @@ import com.ning.http.client.Response;
  * 
  */
 public abstract class RecurlyClientBase {
+
+	private static final String RECURLY_PAGINATION_HEADER = "Link";
 
 	private static final Logger log = LoggerFactory.getLogger(RecurlyClientBase.class);
 
@@ -132,17 +137,17 @@ public abstract class RecurlyClientBase {
 		}
 	}
 
-	protected <T> T fetch(final String recurlyToken, final Class<T> clazz) {
-		return doGET(FETCH_RESOURCE + "/" + recurlyToken, clazz);
-	}
-
 	// /////////////////////////////////////////////////////////////////////////
-
-	protected <T> T doGET(final String resource, final Class<T> clazz) {
-		return doGET(resource, null, clazz);
+	
+	protected <T> List<T> fetches(final String recurlyToken, final Class<T> clazz) {
+		return doGETs(FETCH_RESOURCE + "/" + recurlyToken, clazz);
 	}
 
-	protected <T> T doGET(final String resource, String paramString, final Class<T> clazz) {
+	protected <T> List<T> doGETs(final String resource, final Class<T> clazz) {
+		return doGETs(resource, null, clazz);
+	}
+
+	protected <T> List<T> doGETs(final String resource, String paramString, final Class<T> clazz) {
 		String url = buildRecurlyUrl(resource, paramString);
 
 		if (debug()) {
@@ -152,7 +157,7 @@ public abstract class RecurlyClientBase {
 		return callRecurlySafe(client.prepareGet(url.toString()), clazz);
 	}
 	
-	protected String doGET(final String resource, String paramString) {
+	protected List<String> doGET(final String resource, String paramString) {
 		String url = buildRecurlyUrl(resource, paramString);
 		return callRecurlySafe(client.prepareGet(url));
 	}
@@ -174,7 +179,7 @@ public abstract class RecurlyClientBase {
 		return url.toString();
 	}
 
-	protected <T> T doPOST(final String resource, final RecurlyObject payload, final Class<T> clazz) {
+	protected <T> List<T> doPOSTs(final String resource, final RecurlyObject payload, final Class<T> clazz) {
 		final String xmlPayload;
 		try {
 			xmlPayload = xmlMapper.writeValueAsString(payload);
@@ -188,54 +193,82 @@ public abstract class RecurlyClientBase {
 		}
 
 		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
+	}
+
+	protected <T> List<T> doPUTs(final String resource, final RecurlyObject payload, final Class<T> clazz) {
+		final String xmlPayload;
+		try {
+			xmlPayload = xmlMapper.writeValueAsString(payload);
+			if (debug()) {
+				log.info("Msg to Recurly API [PUT]:: URL : {}", baseUrl + resource);
+				log.info("Payload for [PUT]:: {}", xmlPayload);
+			}
+		} catch (IOException e) {
+			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
+			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
+		}
+
+		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+	}
+
+	protected <T> List<T> doPOSTs(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
+		final String xmlPayload;
+		try {
+			xmlPayload = convertPayloadMapToXmlString(payload);
+			if (debug()) {
+				log.info("Msg to Recurly API [POST]:: URL : {}", baseUrl + resource);
+				log.info("Payload for [POST]:: {}", xmlPayload);
+			}
+		} catch (IOException e) {
+			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
+			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
+		}
+
+		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
+	}
+
+	protected <T> List<T> doPUTs(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
+		final String xmlPayload;
+		try {
+			xmlPayload = convertPayloadMapToXmlString(payload);
+			if (debug()) {
+				log.info("Msg to Recurly API [PUT]:: URL : {}", baseUrl + resource);
+				log.info("Payload for [PUT]:: {}", xmlPayload);
+			}
+		} catch (IOException e) {
+			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
+			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
+		}
+
+		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+	}
+	
+	protected <T> T fetch(final String recurlyToken, final Class<T> clazz) {
+		return doGET(FETCH_RESOURCE + "/" + recurlyToken, clazz);
+	}
+	
+	protected <T> T doGET(final String resource, final Class<T> clazz) {
+		return doGET(resource, null, clazz);
+	}
+
+	protected <T> T doGET(final String resource, String paramString, final Class<T> clazz) {
+		return returnSingleResult(doGETs(resource, paramString, clazz));
+	}
+
+	protected <T> T doPOST(final String resource, final RecurlyObject payload, final Class<T> clazz) {
+		return returnSingleResult(doPOSTs(resource, payload, clazz));
 	}
 
 	protected <T> T doPUT(final String resource, final RecurlyObject payload, final Class<T> clazz) {
-		final String xmlPayload;
-		try {
-			xmlPayload = xmlMapper.writeValueAsString(payload);
-			if (debug()) {
-				log.info("Msg to Recurly API [PUT]:: URL : {}", baseUrl + resource);
-				log.info("Payload for [PUT]:: {}", xmlPayload);
-			}
-		} catch (IOException e) {
-			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
-			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
-		}
-
-		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+		return returnSingleResult(doPUTs(resource, payload, clazz));
 	}
 
 	protected <T> T doPOST(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
-		final String xmlPayload;
-		try {
-			xmlPayload = convertPayloadMapToXmlString(payload);
-			if (debug()) {
-				log.info("Msg to Recurly API [POST]:: URL : {}", baseUrl + resource);
-				log.info("Payload for [POST]:: {}", xmlPayload);
-			}
-		} catch (IOException e) {
-			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
-			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
-		}
-
-		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
+		return returnSingleResult(doPOSTs(resource, payload, clazz));
 	}
 
 	protected <T> T doPUT(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
-		final String xmlPayload;
-		try {
-			xmlPayload = convertPayloadMapToXmlString(payload);
-			if (debug()) {
-				log.info("Msg to Recurly API [PUT]:: URL : {}", baseUrl + resource);
-				log.info("Payload for [PUT]:: {}", xmlPayload);
-			}
-		} catch (IOException e) {
-			log.warn("Unable to serialize {} object as XML: {}", clazz.getName(), payload.toString());
-			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
-		}
-
-		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+		return returnSingleResult(doPUTs(resource, payload, clazz));
 	}
 
 	protected String convertPayloadMapToXmlString(final XmlPayloadMap<?, ?> xmlPayloadMap) throws JsonProcessingException {
@@ -246,23 +279,36 @@ public abstract class RecurlyClientBase {
 	protected void doDELETE(final String resource) {
 		callRecurlySafe(client.prepareDelete(baseUrl + resource), null);
 	}
+	
+	protected <T> T returnSingleResult(List<T> results) {		
+		if(!results.isEmpty()){
+			// Warn if we received more than one result
+			if(results.size() > 1){
+				log.warn("Received multiple results from Recurly when only one was expected.");
+			}
+			return results.get(0);
+		}
+		
+		return null;
+	}
 
-	protected <T> T callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz) {		
-		String result = callRecurlySafe(builder);
+	protected <T> List<T> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz) {		
+		List<String> results = callRecurlySafe(builder);
 		try {
-			return deserialize(result, clazz);
+			return deserialize(results, clazz);
 		} catch (IOException e) {
 			log.warn("Error while calling Recurly", e);
 			throw new RecurlySerializationException("Error while calling Recurly", e);
 		}		
 	}
 	
-	protected String callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
+	protected List<String> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
 		try {
 			return builder.addHeader("Authorization", "Basic " + key).addHeader("Accept", "application/xml")
-					.addHeader("Content-Type", "application/xml; charset=utf-8").execute(new AsyncCompletionHandler<String>() {
+					.addHeader("Content-Type", "application/xml; charset=utf-8").execute(new AsyncCompletionHandler<List<String>>() {
 						@Override
-						public String onCompleted(final Response response) throws Exception {
+						public List<String> onCompleted(final Response response) throws Exception {
+							List<String> paginatedData = new ArrayList<>();
 							if (response.getStatusCode() >= 300) {
 								log.warn("Recurly error whilst calling: {}", response.getUri());
 								log.warn("Recurly error: {}", response.getResponseBody());
@@ -275,7 +321,9 @@ public abstract class RecurlyClientBase {
 								if (debug()) {
 									log.info("Msg from Recurly API :: {}", payload);
 								}
-								return payload;
+								paginatedData.add(payload);
+								paginatedData.addAll(readPagesFully(response));
+								return paginatedData;
 							} finally {
 								closeStream(in);
 							}
@@ -298,10 +346,59 @@ public abstract class RecurlyClientBase {
 			throw new RecurlyException("Interrupted while calling Recurly", e);
 		}
 	}
+	
+	protected List<String> readPagesFully(Response response){
+		List<String> data = new ArrayList<>();
+		String paginationLink = getPageUrlFromResponseHeader(response);
+		if(paginationLink != null){
+			data.addAll(callRecurlySafe(client.prepareGet(paginationLink)));
+		}
+		
+		return data;
+	}
+	
+	private String getPageUrlFromResponseHeader(Response response){
+		// TODO: There is probably a less hacky way to parse the pagination header...
+		
+		String header = response.getHeader(RECURLY_PAGINATION_HEADER);
+		System.out.println("HEADER:\n{\n" + header + "\n}\n");
+		if(header != null){
+			/*
+			 * EXAMPLE: 
+			 * 
+			 *  Status: 200 OK
+			 *	X-Records: 204
+			 *	Link: <https://api.recurly.com/v2/transactions>; rel="start",
+			 *	  <https://api.recurly.com/v2/transactions?cursor=-1241412>; rel="prev"
+			 *	  <https://api.recurly.com/v2/transactions?cursor=124142>; rel="next"
+			 *	ETag: "c7431fcfc386fd59ee6c3c2e9ac2a30c"
+			 */
+			for(String paginationInfo : header.split(",")){
+				String[] p = paginationInfo.split(";");
+				if(p.length >= 2){
+					String pageType = p[1].trim();
+					if(pageType.equals("rel=\"next\"")){
+						try{
+							return new URL(p[0].trim().replaceAll("<|>", "")).toString();
+						}catch(IOException e){
+							log.warn("Unable to understand pagination url[" + p[0] + "]");
+						}
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
 
-	protected <T> T deserialize(String data, @Nullable final Class<T> clazz) throws JsonParseException, JsonMappingException, IOException {
-		T obj = xmlMapper.readValue(data, clazz);
-		return obj;
+	protected <T> List<T> deserialize(List<String> data, @Nullable final Class<T> clazz) throws JsonParseException, JsonMappingException, IOException {
+		List<T> results = new ArrayList<>();
+		for(String dataItem : data){
+			T obj = xmlMapper.readValue(dataItem, clazz);
+			results.add(obj);
+		}
+		
+		return results;
 	}
 
 	protected String convertStreamToString(java.io.InputStream is) {

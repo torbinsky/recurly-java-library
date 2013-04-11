@@ -17,6 +17,9 @@
 
 package com.github.torbinsky.billing.recurly;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +31,14 @@ import com.github.torbinsky.billing.recurly.model.Coupon;
 import com.github.torbinsky.billing.recurly.model.CouponRedeem;
 import com.github.torbinsky.billing.recurly.model.Invoice;
 import com.github.torbinsky.billing.recurly.model.Plan;
+import com.github.torbinsky.billing.recurly.model.RecurlyObject;
 import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 import com.github.torbinsky.billing.recurly.model.list.Accounts;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
+import com.github.torbinsky.billing.recurly.model.list.RecurlyObjects;
 import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.list.Transactions;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
@@ -87,7 +92,8 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return account object on success, null otherwise
      */
     public Accounts getAccounts() {
-        return doGET(Accounts.ACCOUNTS_RESOURCE, Accounts.class);
+        List<Accounts> paginatedAccounts = doGETs(Accounts.ACCOUNTS_RESOURCE, Accounts.class);
+        return depaginateResults(paginatedAccounts);
     }
 
     /**
@@ -206,9 +212,9 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return Subscriptions for the specified user
      */
     public Subscriptions getAccountSubscriptions(final String accountCode) {
-        return doGET(Account.ACCOUNT_RESOURCE
+        return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
                      + "/" + accountCode
-                     + Subscriptions.SUBSCRIPTIONS_RESOURCE, Subscriptions.class);
+                     + Subscriptions.SUBSCRIPTIONS_RESOURCE, Subscriptions.class));
     }
 
     /**
@@ -221,12 +227,12 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return Subscriptions for the specified user
      */
     public Subscriptions getAccountSubscriptions(final String accountCode, final String status) {
-        return doGET(Account.ACCOUNT_RESOURCE
+        return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
                      + "/" + accountCode
                      + Subscriptions.SUBSCRIPTIONS_RESOURCE
                      + "?state="
                      + status,
-                     Subscriptions.class);
+                     Subscriptions.class));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -289,8 +295,8 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the transaction history associated with this account on success, null otherwise
      */
     public Transactions getAccountTransactions(final String accountCode) {
-        return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Transactions.TRANSACTIONS_RESOURCE,
-                     Transactions.class);
+        return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Transactions.TRANSACTIONS_RESOURCE,
+                     Transactions.class));
     }
 
     /**
@@ -345,9 +351,9 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountInvoices(final String accountCode, String stateQuery) {
-        return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Invoices.INVOICES_RESOURCE,
+        return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Invoices.INVOICES_RESOURCE,
         			 "&state="+stateQuery,
-                     Invoices.class);
+                     Invoices.class));
     }
     
     /**
@@ -405,7 +411,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the plan object as identified by the passed in ID
      */
     public Plans getPlans() {
-        return doGET(Plans.PLANS_RESOURCE, Plans.class);
+        return depaginateResults(doGETs(Plans.PLANS_RESOURCE, Plans.class));
     }
 
     /**
@@ -549,5 +555,23 @@ public class RecurlyClient extends RecurlyClientBase {
      */
     public Invoice fetchInvoice(final String recurlyToken) {
         return fetch(recurlyToken, Invoice.class);
+    }
+    
+    private <R extends RecurlyObject, T extends RecurlyObjects<R>> T depaginateResults(List<T> results){
+    	Iterator<T> ai = results.iterator();
+        T depaginatedType = null;
+        while(ai.hasNext()){
+        	// First element
+        	if(depaginatedType == null){
+        		depaginatedType = ai.next();
+        		continue;
+        	}else{
+        		// Add subsequent elements to the first element
+        		List<R> objects = ai.next().getObjects();
+				depaginatedType.getObjects().addAll(objects);
+        	}
+        }
+        
+		return depaginatedType;
     }
 }
