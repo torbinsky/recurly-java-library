@@ -288,7 +288,7 @@ public abstract class RecurlyClientBase {
 			Throwable t = e;
 			// Unwrap any of the API exceptions
 			while((t = t.getCause()) != null){
-				if(e.getCause() instanceof RecurlyAPIException){
+				if(t.getCause() instanceof RecurlyAPIException){					
 					throw (RecurlyAPIException)t;
 				}
 			}
