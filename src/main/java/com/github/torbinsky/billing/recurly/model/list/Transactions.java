@@ -16,13 +16,13 @@
 
 package com.github.torbinsky.billing.recurly.model.list;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 
 /**
@@ -34,15 +34,14 @@ public class Transactions extends RecurlyObjects<Transaction> {
     @XmlTransient
     public static final String TRANSACTIONS_RESOURCE = "/transactions";
     
-    private List<Transaction> transactions;
+    @XmlElement(name = "transaction")
+    private List<Transaction> transactions = new ArrayList<Transaction>();
 
 	@Override
-	@XmlElement(name = "transaction")
 	public List<Transaction> getObjects() {
 		return transactions;
 	}
 	
-	@JsonIgnore
 	public void setTransactions(List<Transaction> transactionList) {
         this.transactions = transactionList;
     }
