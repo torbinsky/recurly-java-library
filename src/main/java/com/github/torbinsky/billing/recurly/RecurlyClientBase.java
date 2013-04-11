@@ -107,7 +107,7 @@ public abstract class RecurlyClientBase {
 	}
 
 	public RecurlyClientBase(final String apiKey, final String host, final int port, final String version) {
-		if(apiKey != null){
+		if (apiKey != null) {
 			this.apiKey = DatatypeConverter.printBase64Binary(apiKey.getBytes());
 		}
 		this.baseUrl = String.format("https://%s:%d/%s", host, port, version);
@@ -123,17 +123,17 @@ public abstract class RecurlyClientBase {
 	protected void setThreadLocalApiKey(String apiKey) {
 		this.threadApiKey.set(DatatypeConverter.printBase64Binary(apiKey.getBytes()));
 	}
-	
+
 	protected void unsetThreadLocalApiKey() {
 		this.threadApiKey.remove();
 	}
-	
-	private String getApiKey(){
+
+	private String getApiKey() {
 		String threadKey = threadApiKey.get();
-		if(threadKey != null){
+		if (threadKey != null) {
 			return threadKey;
 		}
-		
+
 		// Fall back to the non-thread local api key
 		return apiKey;
 	}
@@ -155,7 +155,7 @@ public abstract class RecurlyClientBase {
 	}
 
 	// /////////////////////////////////////////////////////////////////////////
-	
+
 	protected <T> List<T> fetches(final String recurlyToken, final Class<T> clazz) {
 		return doGETs(FETCH_RESOURCE + "/" + recurlyToken, clazz);
 	}
@@ -170,16 +170,16 @@ public abstract class RecurlyClientBase {
 		if (debug()) {
 			log.info("Msg to Recurly API [GET] :: URL : {}", url);
 		}
-		
+
 		return callRecurlySafe(client.prepareGet(url.toString()), clazz);
 	}
-	
+
 	protected List<String> doGET(final String resource, String paramString) {
 		String url = buildRecurlyUrl(resource, paramString);
 		return callRecurlySafe(client.prepareGet(url));
 	}
-	
-	protected String buildRecurlyUrl(String resource, String paramString){
+
+	protected String buildRecurlyUrl(String resource, String paramString) {
 		StringBuffer url = new StringBuffer(baseUrl);
 		url.append(resource);
 		if (resource != null && !resource.contains("?")) {
@@ -192,7 +192,7 @@ public abstract class RecurlyClientBase {
 		if (paramString != null) {
 			url.append(paramString);
 		}
-		
+
 		return url.toString();
 	}
 
@@ -259,11 +259,11 @@ public abstract class RecurlyClientBase {
 
 		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
 	}
-	
+
 	protected <T> T fetch(final String recurlyToken, final Class<T> clazz) {
 		return doGET(FETCH_RESOURCE + "/" + recurlyToken, clazz);
 	}
-	
+
 	protected <T> T doGET(final String resource, final Class<T> clazz) {
 		return doGET(resource, null, clazz);
 	}
@@ -296,51 +296,61 @@ public abstract class RecurlyClientBase {
 	protected void doDELETE(final String resource) {
 		callRecurlySafe(client.prepareDelete(baseUrl + resource), null);
 	}
-	
-	protected <T> T returnSingleResult(List<T> results) {		
-		if(!results.isEmpty()){
+
+	protected <T> T returnSingleResult(List<T> results) {
+		if (!results.isEmpty()) {
 			// Warn if we received more than one result
-			if(results.size() > 1){
+			if (results.size() > 1) {
 				log.warn("Received multiple results from Recurly when only one was expected.");
 			}
 			return results.get(0);
 		}
-		
+
 		return null;
 	}
 
-	protected <T> List<T> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz) {		
+	protected <T> List<T> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz) {
 		List<String> results = callRecurlySafe(builder);
 		try {
 			return deserialize(results, clazz);
 		} catch (IOException e) {
 			log.warn("Error while calling Recurly", e);
 			throw new RecurlySerializationException("Error while calling Recurly", e);
-		}		
+		}
+	}
+
+	protected List<String> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
+		final String requestKey = getApiKey();
+		final RecurlyAPICallResults<String> results = doSinglePageRecurlySafeCall(builder, new RecurlyAPICallResults<String>(), requestKey);
+		do{
+			doSinglePageRecurlySafeCall(client.prepareGet(results.getNextPageUrl()), results, requestKey);
+		}while(results.hasNextPage());
+		
+		return results.getResults();
 	}
 	
-	protected List<String> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
+	protected RecurlyAPICallResults<String> doSinglePageRecurlySafeCall(final AsyncHttpClient.BoundRequestBuilder builder, final RecurlyAPICallResults<String> pageResults, final String requestKey){
 		try {
-			return builder.addHeader("Authorization", "Basic " + getApiKey()).addHeader("Accept", "application/xml")
-					.addHeader("Content-Type", "application/xml; charset=utf-8").execute(new AsyncCompletionHandler<List<String>>() {
+			return builder.addHeader("Authorization", "Basic " + requestKey).addHeader("Accept", "application/xml")
+					.addHeader("Content-Type", "application/xml; charset=utf-8").execute(new AsyncCompletionHandler<RecurlyAPICallResults<String>>() {
 						@Override
-						public List<String> onCompleted(final Response response) throws Exception {
-							List<String> paginatedData = new ArrayList<>();
+						public RecurlyAPICallResults<String> onCompleted(final Response response) throws Exception {						
 							if (response.getStatusCode() >= 300) {
 								log.warn("Recurly error whilst calling: {}", response.getUri());
 								log.warn("Recurly error: {}", response.getResponseBody());
 								throw new RecurlyAPIException("Recurly error: " + response.getResponseBody());
 							}
-			
+
 							final InputStream in = response.getResponseBodyAsStream();
 							try {
 								String payload = convertStreamToString(in);
 								if (debug()) {
 									log.info("Msg from Recurly API :: {}", payload);
 								}
-								paginatedData.add(payload);
-								paginatedData.addAll(readPagesFully(response));
-								return paginatedData;
+								pageResults.getResults().add(payload);
+								pageResults.setNextPageUrl(getPageUrlFromResponseHeader(response));
+								
+								return pageResults;
 							} finally {
 								closeStream(in);
 							}
@@ -352,9 +362,9 @@ public abstract class RecurlyClientBase {
 		} catch (ExecutionException e) {
 			Throwable t = e;
 			// Unwrap any of the API exceptions
-			while((t = t.getCause()) != null){
-				if(t.getCause() instanceof RecurlyAPIException){					
-					throw (RecurlyAPIException)t.getCause();
+			while ((t = t.getCause()) != null) {
+				if (t.getCause() instanceof RecurlyAPIException) {
+					throw (RecurlyAPIException) t.getCause();
 				}
 			}
 			throw new RecurlyException("Execution error", e);
@@ -363,58 +373,49 @@ public abstract class RecurlyClientBase {
 			throw new RecurlyException("Interrupted while calling Recurly", e);
 		}
 	}
-	
-	protected List<String> readPagesFully(Response response){
-		List<String> data = new ArrayList<>();
-		String paginationLink = getPageUrlFromResponseHeader(response);
-		if(paginationLink != null){
-			data.addAll(callRecurlySafe(client.prepareGet(paginationLink)));
-		}
-		
-		return data;
-	}
-	
-	private String getPageUrlFromResponseHeader(Response response){
-		// TODO: There is probably a less hacky way to parse the pagination header...
-		
+
+	private String getPageUrlFromResponseHeader(Response response) {
+		// TODO: There is probably a less hacky way to parse the pagination
+		// header...
+
 		String header = response.getHeader(RECURLY_PAGINATION_HEADER);
 		System.out.println("HEADER:\n{\n" + header + "\n}\n");
-		if(header != null){
+		if (header != null) {
 			/*
-			 * EXAMPLE: 
+			 * EXAMPLE:
 			 * 
-			 *  Status: 200 OK
-			 *	X-Records: 204
-			 *	Link: <https://api.recurly.com/v2/transactions>; rel="start",
-			 *	  <https://api.recurly.com/v2/transactions?cursor=-1241412>; rel="prev"
-			 *	  <https://api.recurly.com/v2/transactions?cursor=124142>; rel="next"
-			 *	ETag: "c7431fcfc386fd59ee6c3c2e9ac2a30c"
+			 * Status: 200 OK X-Records: 204 Link:
+			 * <https://api.recurly.com/v2/transactions>; rel="start",
+			 * <https://api.recurly.com/v2/transactions?cursor=-1241412>;
+			 * rel="prev"
+			 * <https://api.recurly.com/v2/transactions?cursor=124142>;
+			 * rel="next" ETag: "c7431fcfc386fd59ee6c3c2e9ac2a30c"
 			 */
-			for(String paginationInfo : header.split(",")){
+			for (String paginationInfo : header.split(",")) {
 				String[] p = paginationInfo.split(";");
-				if(p.length >= 2){
+				if (p.length >= 2) {
 					String pageType = p[1].trim();
-					if(pageType.equals("rel=\"next\"")){
-						try{
+					if (pageType.equals("rel=\"next\"")) {
+						try {
 							return new URL(p[0].trim().replaceAll("<|>", "")).toString();
-						}catch(IOException e){
+						} catch (IOException e) {
 							log.warn("Unable to understand pagination url[" + p[0] + "]");
 						}
 					}
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
 	protected <T> List<T> deserialize(List<String> data, @Nullable final Class<T> clazz) throws JsonParseException, JsonMappingException, IOException {
 		List<T> results = new ArrayList<>();
-		for(String dataItem : data){
+		for (String dataItem : data) {
 			T obj = xmlMapper.readValue(dataItem, clazz);
 			results.add(obj);
 		}
-		
+
 		return results;
 	}
 
@@ -442,5 +443,30 @@ public abstract class RecurlyClientBase {
 		final AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
 		builder.setMaximumConnectionsPerHost(-1);
 		return new AsyncHttpClient(builder.build());
+	}
+
+	class RecurlyAPICallResults<T> {
+		private String nextPageUrl = null;
+		private List<T> results = new ArrayList<>();
+
+		private RecurlyAPICallResults() {
+			super();
+		}
+
+		public String getNextPageUrl() {
+			return nextPageUrl;
+		}
+
+		public void setNextPageUrl(String nextPageUrl) {
+			this.nextPageUrl = nextPageUrl;
+		}
+
+		public List<T> getResults() {
+			return results;
+		}
+
+		public boolean hasNextPage(){
+			return nextPageUrl != null;
+		}
 	}
 }
