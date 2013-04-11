@@ -46,240 +46,422 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	private final RecurlyClient keyClient;
 
 	public KeyAgnosticRecurlyClientImpl() {
-		keyClient = new RecurlyClient("");
+		keyClient = new RecurlyClient(null);
 	}
 
 	@Override
-	public Account createAccount(XmlPayloadMap<?, ?> account, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.createAccount(account);
+	public Account createAccount(final XmlPayloadMap<?, ?> account, String apiKey) {
+		return new ThreadScopedAPIClientCall<Account>(apiKey){
+			@Override
+			Account doCall() {
+				return keyClient.createAccount(account);
+			}			
+		}.call();
 	}
 
 	@Override
 	public Accounts getAccounts(String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccounts();
+		return new ThreadScopedAPIClientCall<Accounts>(apiKey){
+			@Override
+			Accounts doCall() {
+				return keyClient.getAccounts();
+			}			
+		}.call();
 	}
 
 	@Override
-	public Account getAccount(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccount(accountCode);
+	public Account getAccount(final String accountCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Account>(apiKey){
+			@Override
+			Account doCall() {
+				return keyClient.getAccount(accountCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Account updateAccount(String accountCode, XmlPayloadMap<?, ?> account, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.updateAccount(accountCode, account);
+	public Account updateAccount(final String accountCode, final XmlPayloadMap<?, ?> account, String apiKey) {
+		return new ThreadScopedAPIClientCall<Account>(apiKey){
+			@Override
+			Account doCall() {
+				return keyClient.updateAccount(accountCode, account);
+			}			
+		}.call();
 	}
 
 	@Override
-	public void closeAccount(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		
+	public void closeAccount(final String accountCode, String apiKey) {
+		new ThreadScopedAPIClientCall<Void>(apiKey){
+			@Override
+			Void doCall() {
+				keyClient.closeAccount(accountCode);
+				return null;
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscription createSubscription(XmlPayloadMap<?, ?> subscription, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.createSubscription(subscription);
+	public Subscription createSubscription(final XmlPayloadMap<?, ?> subscription, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscription>(apiKey){
+			@Override
+			Subscription doCall() {
+				return keyClient.createSubscription(subscription);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscription getSubscription(String uuid, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getSubscription(uuid);
+	public Subscription getSubscription(final String uuid, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscription>(apiKey){
+			@Override
+			Subscription doCall() {
+				return keyClient.getSubscription(uuid);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscription cancelSubscription(Subscription subscription, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.cancelSubscription(subscription);
+	public Subscription cancelSubscription(final Subscription subscription, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscription>(apiKey){
+			@Override
+			Subscription doCall() {
+				return keyClient.cancelSubscription(subscription);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscription reactivateSubscription(Subscription subscription, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.reactivateSubscription(subscription);
+	public Subscription reactivateSubscription(final Subscription subscription, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscription>(apiKey){
+			@Override
+			Subscription doCall() {
+				return keyClient.reactivateSubscription(subscription);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscription updateSubscription(String uuid, XmlPayloadMap<?, ?> subscriptionUpdate, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.updateSubscription(uuid, subscriptionUpdate);
+	public Subscription updateSubscription(final String uuid, final XmlPayloadMap<?, ?> subscriptionUpdate, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscription>(apiKey){
+			@Override
+			Subscription doCall() {
+				return keyClient.updateSubscription(uuid, subscriptionUpdate);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscriptions getAccountSubscriptions(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccountSubscriptions(accountCode);
+	public Subscriptions getAccountSubscriptions(final String accountCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscriptions>(apiKey){
+			@Override
+			Subscriptions doCall() {
+				return keyClient.getAccountSubscriptions(accountCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscriptions getAccountSubscriptions(String accountCode, String status, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccountSubscriptions(accountCode);
+	public Subscriptions getAccountSubscriptions(final String accountCode, String status, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscriptions>(apiKey){
+			@Override
+			Subscriptions doCall() {
+				return keyClient.getAccountSubscriptions(accountCode);
+			}			
+		}.call();
 	}
 
 	@Override
 	public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo, final String accountCode, final String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.createOrUpdateBillingInfo(billingInfo, accountCode);
+		return new ThreadScopedAPIClientCall<BillingInfo>(apiKey){
+			@Override
+			BillingInfo doCall() {
+				return keyClient.createOrUpdateBillingInfo(billingInfo, accountCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public BillingInfo getBillingInfo(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getBillingInfo(accountCode);
+	public BillingInfo getBillingInfo(final String accountCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<BillingInfo>(apiKey){
+			@Override
+			BillingInfo doCall() {
+				return keyClient.getBillingInfo(accountCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public void clearBillingInfo(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
+	public void clearBillingInfo(final String accountCode, String apiKey) {
+		new ThreadScopedAPIClientCall<Void>(apiKey){
+			@Override
+			Void doCall() {
+				keyClient.clearBillingInfo(accountCode);
+				return null;
+			}			
+		}.call();
 		
 	}
 
 	@Override
-	public Transactions getAccountTransactions(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccountTransactions(accountCode);
+	public Transactions getAccountTransactions(final String accountCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Transactions>(apiKey){
+			@Override
+			Transactions doCall() {
+				return keyClient.getAccountTransactions(accountCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Transaction createTransaction(XmlPayloadMap<?, ?> trans, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.createTransaction(trans);
+	public Transaction createTransaction(final XmlPayloadMap<?, ?> trans, String apiKey) {
+		return new ThreadScopedAPIClientCall<Transaction>(apiKey){
+			@Override
+			Transaction doCall() {
+				return keyClient.createTransaction(trans);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Invoices getAccountInvoices(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccountInvoices(accountCode);
+	public Invoices getAccountInvoices(final String accountCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Invoices>(apiKey){
+			@Override
+			Invoices doCall() {
+				return keyClient.getAccountInvoices(accountCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Plan createPlan(XmlPayloadMap<?, ?> plan, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.createPlan(plan);
+	public Plan createPlan(final XmlPayloadMap<?, ?> plan, String apiKey) {
+		return new ThreadScopedAPIClientCall<Plan>(apiKey){
+			@Override
+			Plan doCall() {
+				return keyClient.createPlan(plan);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Plan getPlan(String planCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getPlan(planCode);
+	public Plan getPlan(final String planCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Plan>(apiKey){
+			@Override
+			Plan doCall() {
+				return keyClient.getPlan(planCode);
+			}			
+		}.call();
 	}
 
 	@Override
 	public Plans getPlans(String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getPlans();
+		return new ThreadScopedAPIClientCall<Plans>(apiKey){
+			@Override
+			Plans doCall() {
+				return keyClient.getPlans();
+			}			
+		}.call();
 	}
 
 	@Override
-	public void deletePlan(String planCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		keyClient.deletePlan(planCode);
+	public void deletePlan(final String planCode, String apiKey) {
+		new ThreadScopedAPIClientCall<Void>(apiKey){
+			@Override
+			Void doCall() {
+				keyClient.deletePlan(planCode);
+				return null;
+			}			
+		}.call();
 	}
 
 	@Override
-	public AddOn createPlanAddOn(String planCode, XmlPayloadMap<?, ?> addOn, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.createPlanAddOn(planCode, addOn);
+	public AddOn createPlanAddOn(final String planCode, final XmlPayloadMap<?, ?> addOn, String apiKey) {
+		return new ThreadScopedAPIClientCall<AddOn>(apiKey){
+			@Override
+			AddOn doCall() {
+				return keyClient.createPlanAddOn(planCode, addOn);
+			}			
+		}.call();
 	}
 
 	@Override
-	public AddOn getAddOn(String planCode, String addOnCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAddOn(planCode, addOnCode);
+	public AddOn getAddOn(final String planCode, final String addOnCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<AddOn>(apiKey){
+			@Override
+			AddOn doCall() {
+				return keyClient.getAddOn(planCode, addOnCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public AddOn getAddOns(String planCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAddOns(planCode);
+	public AddOn getAddOns(final String planCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<AddOn>(apiKey){
+			@Override
+			AddOn doCall() {
+				return keyClient.getAddOns(planCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public void deleteAddOn(String planCode, String addOnCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		keyClient.deleteAddOn(planCode, addOnCode);
+	public void deleteAddOn(final String planCode, final String addOnCode, String apiKey) {
+		new ThreadScopedAPIClientCall<Void>(apiKey){
+			@Override
+			Void doCall() {
+				keyClient.deleteAddOn(planCode, addOnCode);
+				return null;
+			}			
+		}.call();
 	}
 
 	@Override
-	public Coupon createCoupon(XmlPayloadMap<?, ?> coupon, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.createCoupon(coupon);
+	public Coupon createCoupon(final XmlPayloadMap<?, ?> coupon, String apiKey) {
+		return new ThreadScopedAPIClientCall<Coupon>(apiKey){
+			@Override
+			Coupon doCall() {
+				return keyClient.createCoupon(coupon);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Coupon getCoupon(String couponCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getCoupon(couponCode);
+	public Coupon getCoupon(final String couponCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Coupon>(apiKey){
+			@Override
+			Coupon doCall() {
+				return keyClient.getCoupon(couponCode);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Subscription fetchSubscription(String recurlyToken, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.fetchSubscription(recurlyToken);
+	public Subscription fetchSubscription(final String recurlyToken, String apiKey) {
+		return new ThreadScopedAPIClientCall<Subscription>(apiKey){
+			@Override
+			Subscription doCall() {
+				return keyClient.fetchSubscription(recurlyToken);
+			}			
+		}.call();
 	}
 
 	@Override
-	public BillingInfo fetchBillingInfo(String recurlyToken, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.fetchBillingInfo(recurlyToken);
+	public BillingInfo fetchBillingInfo(final String recurlyToken, String apiKey) {
+		return new ThreadScopedAPIClientCall<BillingInfo>(apiKey){
+			@Override
+			BillingInfo doCall() {
+				return keyClient.fetchBillingInfo(recurlyToken);
+			}			
+		}.call();
 	}
 
 	@Override
-	public Invoice fetchInvoice(String recurlyToken, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.fetchInvoice(recurlyToken);
+	public Invoice fetchInvoice(final String recurlyToken, String apiKey) {
+		return new ThreadScopedAPIClientCall<Invoice>(apiKey){
+			@Override
+			Invoice doCall() {
+				return keyClient.fetchInvoice(recurlyToken);
+			}			
+		}.call();
 	}
 
+	@Override
+	public Redemption getAccountRedemption(final String accountCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Redemption>(apiKey){
+			@Override
+			Redemption doCall() {
+				return keyClient.getAccountRedemption(accountCode);
+			}			
+		}.call();
+	}
+
+	@Override
+	public Invoices getAccountInvoices(final String accountCode, final String stateQuery, String apiKey) {
+		return new ThreadScopedAPIClientCall<Invoices>(apiKey){
+			@Override
+			Invoices doCall() {
+				return keyClient.getAccountInvoices(accountCode, stateQuery);
+			}			
+		}.call();
+	}
+
+	@Override
+	public Invoices getAccountCollectedInvoices(final String accountCode, String apiKey) {
+		return new ThreadScopedAPIClientCall<Invoices>(apiKey){
+			@Override
+			Invoices doCall() {
+				return keyClient.getAccountCollectedInvoices(accountCode);
+			}			
+		}.call();
+	}
+
+	@Override
+	public CouponRedeem redeemCoupon(final String couponCode, final XmlPayloadMap<?, ?> couponRedeem, String apiKey) {
+		return new ThreadScopedAPIClientCall<CouponRedeem>(apiKey){
+			@Override
+			CouponRedeem doCall() {
+				return keyClient.redeemCoupon(couponCode, couponRedeem);
+			}			
+		}.call();
+	}
+
+	@Override
+	public <T> T create(final String path, final XmlPayloadMap<?, ?> payload, final Class<T> clazz, String apiKey) {
+		return new ThreadScopedAPIClientCall<T>(apiKey){
+			@Override
+			T doCall() {
+				return keyClient.create(path, payload, clazz);
+			}			
+		}.call();
+	}
+
+	@Override
+	public <T> T update(final String path, final XmlPayloadMap<?, ?> payload, final Class<T> clazz, String apiKey) {
+		return new ThreadScopedAPIClientCall<T>(apiKey){
+			@Override
+			T doCall() {
+				return keyClient.update(path, payload, clazz);
+			}			
+		}.call();
+	}
+	
 	@Override
 	public synchronized void open() {
 		keyClient.open();
 	}
-
+	
 	@Override
 	public synchronized void close() {
 		keyClient.close();
 	}
 
-	@Override
-	public Redemption getAccountRedemption(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccountRedemption(accountCode);
+	/**
+	 * Wraps API calls which should be thread scoped in order to avoid API key
+	 * race conditions between threads.
+	 * 
+	 * @author Torben
+	 *
+	 * @param <T> the type of result returned by this API call
+	 */
+	protected abstract class ThreadScopedAPIClientCall<T> {
+		private String apiKey;
+		ThreadScopedAPIClientCall(String apiKey){
+			this.apiKey = apiKey;			
+		}
+		
+		/**
+		 * This is the method you should call which will wrap the call in api key set/unset operations
+		 */
+		public T call(){
+			keyClient.setThreadLocalApiKey(apiKey);
+			T result = doCall();
+			keyClient.unsetThreadLocalApiKey();
+			
+			return result;
+		}
+		
+		/**
+		 * This is where you implement the specific api call(s) that should run within the scope of the key
+		 */
+		abstract T doCall();
 	}
-
-	@Override
-	public Invoices getAccountInvoices(String accountCode, String stateQuery, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccountInvoices(accountCode, stateQuery);
-	}
-
-	@Override
-	public Invoices getAccountCollectedInvoices(String accountCode, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.getAccountCollectedInvoices(accountCode);
-	}
-
-	@Override
-	public CouponRedeem redeemCoupon(String couponCode, XmlPayloadMap<?, ?> couponRedeem, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.redeemCoupon(couponCode, couponRedeem);
-	}
-
-	@Override
-	public <T> T create(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.create(path, payload, clazz);
-	}
-
-	@Override
-	public <T> T update(String path, XmlPayloadMap<?, ?> payload, Class<T> clazz, String apiKey) {
-		keyClient.setApiKey(apiKey);
-		return keyClient.update(path, payload, clazz);
-	}
-
-
 }

@@ -97,7 +97,8 @@ public abstract class RecurlyClientBase {
 
 	protected final XmlMapper xmlMapper = new XmlMapper();
 
-	private String key;
+	private String apiKey;
+	private ThreadLocal<String> threadApiKey = new ThreadLocal<>();
 	private final String baseUrl;
 	private AsyncHttpClient client;
 
@@ -106,7 +107,9 @@ public abstract class RecurlyClientBase {
 	}
 
 	public RecurlyClientBase(final String apiKey, final String host, final int port, final String version) {
-		setApiKey(apiKey);
+		if(apiKey != null){
+			this.apiKey = DatatypeConverter.printBase64Binary(apiKey.getBytes());
+		}
 		this.baseUrl = String.format("https://%s:%d/%s", host, port, version);
 
 		final AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
@@ -117,8 +120,22 @@ public abstract class RecurlyClientBase {
 		xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 	}
 
-	protected void setApiKey(String apiKey) {
-		this.key = DatatypeConverter.printBase64Binary(apiKey.getBytes());
+	protected void setThreadLocalApiKey(String apiKey) {
+		this.threadApiKey.set(DatatypeConverter.printBase64Binary(apiKey.getBytes()));
+	}
+	
+	protected void unsetThreadLocalApiKey() {
+		this.threadApiKey.remove();
+	}
+	
+	private String getApiKey(){
+		String threadKey = threadApiKey.get();
+		if(threadKey != null){
+			return threadKey;
+		}
+		
+		// Fall back to the non-thread local api key
+		return apiKey;
 	}
 
 	/**
@@ -304,7 +321,7 @@ public abstract class RecurlyClientBase {
 	
 	protected List<String> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
 		try {
-			return builder.addHeader("Authorization", "Basic " + key).addHeader("Accept", "application/xml")
+			return builder.addHeader("Authorization", "Basic " + getApiKey()).addHeader("Accept", "application/xml")
 					.addHeader("Content-Type", "application/xml; charset=utf-8").execute(new AsyncCompletionHandler<List<String>>() {
 						@Override
 						public List<String> onCompleted(final Response response) throws Exception {
