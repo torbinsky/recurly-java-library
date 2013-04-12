@@ -444,6 +444,43 @@ public class Plan extends RecurlyObject {
         @XmlElement(name = "ZAR")
         @XmlValue
         private Integer unitAmountZAR;
+        
+        public Integer getUnitAmount(RecurlyCurrency currency){
+        	switch(currency){
+        	case AUD:
+        		return getUnitAmountAUD();
+        	case CAD:
+        		return getUnitAmountCAD();
+        	case CHF:
+        		return getUnitAmountCHF();
+        	case CZK:
+        		return getUnitAmountCZK();
+        	case DKK:
+        		return getUnitAmountDKK();
+        	case EUR:
+        		return getUnitAmountEUR();
+        	case GBP:
+        		return getUnitAmountGBP();
+        	case HUF:
+        		return getUnitAmountHUF();
+        	case NOK:
+        		return getUnitAmountNOK();
+        	case NZD:
+        		return getUnitAmountNZD();
+        	case PLN:
+        		return getUnitAmountPLN();
+        	case SEK:
+        		return getUnitAmountSEK();
+        	case SGD:
+        		return getUnitAmountSGD();
+        	case USD:
+        		return getUnitAmountUSD();
+        	case ZAR:
+        		return getUnitAmountZAR();
+    		default:
+    			throw new RuntimeException("Unhandled currency type encountered.");
+        	}
+        }
 
         public Integer getUnitAmountUSD() {
             return unitAmountUSD;
