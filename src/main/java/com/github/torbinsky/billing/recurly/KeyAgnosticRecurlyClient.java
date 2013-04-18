@@ -476,10 +476,11 @@ public interface KeyAgnosticRecurlyClient {
     /**
      * Creates and adjustment on an account.
      * 
-     * @param adjustment the adjustment which should be applied to an account
+     * @param accountCode the identifier of the account which the adjustment will be applied against
+     * @param adjustmentData the adjustment which should be applied to an account
      * @return the adjustment that was created, if any
      */
-    public Adjustment createAdjustment(final Adjustment adjustment, final String apiKey);    
+    public Adjustment createAdjustment(final String accountCode, final XmlPayloadMap<?, ?> adjustmentData, final String apiKey);    
     /**
      * Deletes an adjustment, if possible
      * 

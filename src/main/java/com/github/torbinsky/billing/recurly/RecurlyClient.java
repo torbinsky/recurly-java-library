@@ -391,8 +391,12 @@ public class RecurlyClient extends RecurlyClientBase {
                 + Adjustments.ADJUSTMENTS_RESOURCE, Adjustments.class));
     }
     
-    public Adjustment createAdjustment(final Adjustment adjustment){
-    	return doPOST(Adjustments.ADJUSTMENTS_RESOURCE, adjustment, Adjustment.class);
+    public Adjustment createAdjustment(final String accountCode, final XmlPayloadMap<?, ?> adjustmentData){
+    	return doPOST(
+    			Account.ACCOUNT_RESOURCE + "/" + accountCode + Adjustments.ADJUSTMENTS_RESOURCE, 
+    			adjustmentData,
+    			Adjustment.class
+    		);
     }
     
     public void deleteAdjustment(final String adjustmentUUID){
