@@ -17,6 +17,7 @@ package com.github.torbinsky.billing.recurly;
 
 import com.github.torbinsky.billing.recurly.model.Account;
 import com.github.torbinsky.billing.recurly.model.AddOn;
+import com.github.torbinsky.billing.recurly.model.Adjustment;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Coupon;
 import com.github.torbinsky.billing.recurly.model.CouponRedeem;
@@ -26,6 +27,7 @@ import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 import com.github.torbinsky.billing.recurly.model.list.Accounts;
+import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
 import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
@@ -392,14 +394,45 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 				return keyClient.getAccountCollectedInvoices(accountCode);
 			}			
 		}.call();
-	}
-
+	}	
+	
 	@Override
 	public CouponRedeem redeemCoupon(final String couponCode, final XmlPayloadMap<?, ?> couponRedeem, String apiKey) {
 		return new ThreadScopedAPIClientCall<CouponRedeem>(apiKey){
 			@Override
 			CouponRedeem doCall() {
 				return keyClient.redeemCoupon(couponCode, couponRedeem);
+			}			
+		}.call();
+	}
+	
+	@Override
+	public Adjustments getAccountAdjustments(final String accountCode, final String apiKey) {
+		return new ThreadScopedAPIClientCall<Adjustments>(apiKey){
+			@Override
+			Adjustments doCall() {
+				return keyClient.getAccountAdjustments(accountCode);
+			}			
+		}.call();
+	}
+	
+	@Override
+	public Adjustment createAdjustment(final Adjustment adjustment, final String apiKey) {
+		return new ThreadScopedAPIClientCall<Adjustment>(apiKey){
+			@Override
+			Adjustment doCall() {
+				return keyClient.createAdjustment(adjustment);
+			}			
+		}.call();
+	}
+	
+	@Override
+	public void deleteAdjustment(final String adjustmentUUID, final String apiKey) {
+		new ThreadScopedAPIClientCall<Void>(apiKey){
+			@Override
+			Void doCall() {
+				keyClient.deleteAdjustment(adjustmentUUID);
+				return null;
 			}			
 		}.call();
 	}
@@ -464,4 +497,5 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 		 */
 		abstract T doCall();
 	}
+
 }

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.github.torbinsky.billing.recurly.exception.RecurlyAPIException;
 import com.github.torbinsky.billing.recurly.model.Account;
 import com.github.torbinsky.billing.recurly.model.AddOn;
+import com.github.torbinsky.billing.recurly.model.Adjustment;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Coupon;
 import com.github.torbinsky.billing.recurly.model.CouponRedeem;
@@ -36,6 +37,7 @@ import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 import com.github.torbinsky.billing.recurly.model.list.Accounts;
+import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
 import com.github.torbinsky.billing.recurly.model.list.RecurlyObjects;
@@ -380,6 +382,23 @@ public class RecurlyClient extends RecurlyClientBase {
         return getAccountInvoices(accountCode, "all");
     }
 
+	///////////////////////////////////////////////////////////////////////////
+	// Account Adjustments
+    
+    public Adjustments getAccountAdjustments(final String accountCode){
+    	return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
+                + "/" + accountCode
+                + Adjustments.ADJUSTMENTS_RESOURCE, Adjustments.class));
+    }
+    
+    public Adjustment createAdjustment(final Adjustment adjustment){
+    	return doPOST(Adjustments.ADJUSTMENTS_RESOURCE, adjustment, Adjustment.class);
+    }
+    
+    public void deleteAdjustment(final String adjustmentUUID){
+    	doDELETE(Adjustments.ADJUSTMENTS_RESOURCE + "/" + adjustmentUUID);
+    }
+    
     ///////////////////////////////////////////////////////////////////////////
 
     /**

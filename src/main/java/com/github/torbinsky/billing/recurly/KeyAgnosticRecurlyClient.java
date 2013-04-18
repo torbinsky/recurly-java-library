@@ -17,6 +17,7 @@ package com.github.torbinsky.billing.recurly;
 
 import com.github.torbinsky.billing.recurly.model.Account;
 import com.github.torbinsky.billing.recurly.model.AddOn;
+import com.github.torbinsky.billing.recurly.model.Adjustment;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Coupon;
 import com.github.torbinsky.billing.recurly.model.CouponRedeem;
@@ -26,6 +27,7 @@ import com.github.torbinsky.billing.recurly.model.Redemption;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 import com.github.torbinsky.billing.recurly.model.list.Accounts;
+import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
 import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
@@ -463,4 +465,25 @@ public interface KeyAgnosticRecurlyClient {
 	 * @return invoice object on success, null otherwise
 	 */
 	public Invoice fetchInvoice(final String recurlyToken, final String apiKey);
+	
+	/**
+	 * Gets a list of adjustments for an account.
+	 * 
+	 * @param accountCode the account identifier
+	 * @return a list of adjustments corresponding to a particular account
+	 */
+	public Adjustments getAccountAdjustments(final String accountCode, final String apiKey);    
+    /**
+     * Creates and adjustment on an account.
+     * 
+     * @param adjustment the adjustment which should be applied to an account
+     * @return the adjustment that was created, if any
+     */
+    public Adjustment createAdjustment(final Adjustment adjustment, final String apiKey);    
+    /**
+     * Deletes an adjustment, if possible
+     * 
+     * @param adjustmentUUID the identifier of the adjustment
+     */
+    public void deleteAdjustment(final String adjustmentUUID, final String apiKey);
 }

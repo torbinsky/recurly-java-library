@@ -29,7 +29,7 @@ import com.github.torbinsky.billing.recurly.model.Adjustment;
 public class Adjustments extends RecurlyObjects<Adjustment> {
 
     @XmlTransient
-    public static final String INVOICES_RESOURCE = "/adjustments";
+    public static final String ADJUSTMENTS_RESOURCE = "/adjustments";
     
     @XmlElement(name = "adjustment")
     private List<Adjustment> adjustments = new ArrayList<Adjustment>();
