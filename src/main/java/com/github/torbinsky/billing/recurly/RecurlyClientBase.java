@@ -171,7 +171,7 @@ public abstract class RecurlyClientBase {
 			log.info("Msg to Recurly API [GET] :: URL : {}", url);
 		}
 
-		return callRecurlySafe(client.prepareGet(url.toString()), clazz);
+		return callRecurlySafe(client.prepareGet(url.toString()), clazz, true);
 	}
 
 	protected List<String> doGET(final String resource, String paramString) {
@@ -209,7 +209,7 @@ public abstract class RecurlyClientBase {
 			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
-		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
+		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz, true);
 	}
 
 	protected <T> List<T> doPUTs(final String resource, final RecurlyObject payload, final Class<T> clazz) {
@@ -225,7 +225,7 @@ public abstract class RecurlyClientBase {
 			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
-		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz, true);
 	}
 
 	protected <T> List<T> doPOSTs(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
@@ -241,7 +241,7 @@ public abstract class RecurlyClientBase {
 			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
-		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz);
+		return callRecurlySafe(client.preparePost(baseUrl + resource).setBody(xmlPayload), clazz, true);
 	}
 
 	protected <T> List<T> doPUTs(final String resource, final XmlPayloadMap<?, ?> payload, final Class<T> clazz) {
@@ -257,7 +257,7 @@ public abstract class RecurlyClientBase {
 			throw new RecurlySerializationException("Unable to serialize {} object as XML: {}", e);
 		}
 
-		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz);
+		return callRecurlySafe(client.preparePut(baseUrl + resource).setBody(xmlPayload), clazz, true);
 	}
 
 	protected <T> T fetch(final String recurlyToken, final Class<T> clazz) {
@@ -294,7 +294,7 @@ public abstract class RecurlyClientBase {
 	}
 
 	protected void doDELETE(final String resource) {
-		callRecurlySafe(client.prepareDelete(baseUrl + resource), null);
+		callRecurlySafe(client.prepareDelete(baseUrl + resource), null, false);
 	}
 
 	protected <T> T returnSingleResult(List<T> results) {
@@ -309,14 +309,18 @@ public abstract class RecurlyClientBase {
 		return null;
 	}
 
-	protected <T> List<T> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz) {
+	protected <T> List<T> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz, final boolean parseResult) {
 		List<String> results = callRecurlySafe(builder);
-		try {
-			return deserialize(results, clazz);
-		} catch (IOException e) {
-			log.warn("Error while calling Recurly", e);
-			throw new RecurlySerializationException("Error while calling Recurly", e);
+		if(parseResult){
+			try {
+				return deserialize(results, clazz);
+			} catch (IOException e) {
+				log.warn("Error while calling Recurly", e);
+				throw new RecurlySerializationException("Error while calling Recurly", e);
+			}
 		}
+		
+		return null;
 	}
 
 	protected List<String> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
