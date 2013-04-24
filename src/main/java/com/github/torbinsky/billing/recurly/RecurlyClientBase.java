@@ -340,8 +340,8 @@ public abstract class RecurlyClientBase {
 						@Override
 						public RecurlyAPICallResults<String> onCompleted(final Response response) throws Exception {						
 							if (response.getStatusCode() >= 300) {
-								log.warn("Recurly error whilst calling: {}", response.getUri());
-								log.warn("Recurly error: {}", response.getResponseBody());
+								log.debug("Recurly error whilst calling: {}", response.getUri());
+								log.debug("Recurly error: {}", response.getResponseBody());
 								throw new RecurlyAPIException("Recurly error: " + response.getResponseBody());
 							}
 
