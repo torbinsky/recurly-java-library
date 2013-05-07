@@ -283,6 +283,13 @@ public interface KeyAgnosticRecurlyClient {
 	public Redemption getAccountRedemption(final String accountCode, final String apiKey);
 	
 	public CouponRedeem redeemCoupon(final String couponCode, final XmlPayloadMap<?, ?> couponRedeem, final String apiKey);
+	
+	/**
+     * Deactivate a coupon
+     * <p/>
+     * Deactivates a coupon with the matching code
+     */
+    public void deactivateCoupon(final String couponCode, final String apiKey);
 
 	// /////////////////////////////////////////////////////////////////////////
 	// User invoices

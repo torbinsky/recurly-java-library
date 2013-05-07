@@ -325,6 +325,18 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 			}			
 		}.call();
 	}
+	
+
+	@Override
+	public void deactivateCoupon(final String couponCode, final String apiKey) {
+		new ThreadScopedAPIClientCall<Void>(apiKey){
+			@Override
+			Void doCall() {
+				keyClient.deactivateCoupon(couponCode);
+				return null;
+			}			
+		}.call();
+	}
 
 	@Override
 	public Coupon getCoupon(final String couponCode, String apiKey) {

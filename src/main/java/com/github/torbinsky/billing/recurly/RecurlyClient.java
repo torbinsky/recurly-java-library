@@ -338,6 +338,15 @@ public class RecurlyClient extends RecurlyClientBase {
     public CouponRedeem redeemCoupon(final String couponCode, final XmlPayloadMap<?, ?> couponRedeem) {
         return doPOST(Coupon.COUPON_RESOURCE + "/" + couponCode + CouponRedeem.COUPON_REDEEM_RESOURCE, couponRedeem, CouponRedeem.class);
     }
+    
+    /**
+     * Deactivate a coupon
+     * <p/>
+     * Deactivates a coupon with the matching code
+     */
+    public void deactivateCoupon(final String couponCode) {
+        doDELETE(Coupon.COUPON_RESOURCE + "/" + couponCode);
+    }
 	///////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////
