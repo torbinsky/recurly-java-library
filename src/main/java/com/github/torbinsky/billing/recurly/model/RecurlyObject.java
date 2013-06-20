@@ -92,6 +92,12 @@ public abstract class RecurlyObject {
         if (object == null) {
             return true;
         }
+        
+        if (object instanceof String){
+        	if(object.equals("null")){
+        		return true;
+        	}
+        }
 
         // Hack to work around Recurly output for nil values: the response will contain
         // an element with a nil attribute (e.g. <city nil="nil"></city>) which Jackson will
