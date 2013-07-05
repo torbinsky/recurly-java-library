@@ -400,6 +400,12 @@ public class RecurlyClient extends RecurlyClientBase {
                 + Adjustments.ADJUSTMENTS_RESOURCE, Adjustments.class));
     }
     
+    public Adjustments getAccountAdjustments(final String accountCode, final String state){
+    	return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
+                + "/" + accountCode
+                + Adjustments.ADJUSTMENTS_RESOURCE, "&state=" + state, Adjustments.class));
+    }
+    
     public Adjustment createAdjustment(final String accountCode, final XmlPayloadMap<?, ?> adjustmentData){
     	return doPOST(
     			Account.ACCOUNT_RESOURCE + "/" + accountCode + Adjustments.ADJUSTMENTS_RESOURCE, 

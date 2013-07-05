@@ -479,7 +479,17 @@ public interface KeyAgnosticRecurlyClient {
 	 * @param accountCode the account identifier
 	 * @return a list of adjustments corresponding to a particular account
 	 */
-	public Adjustments getAccountAdjustments(final String accountCode, final String apiKey);    
+	public Adjustments getAccountAdjustments(final String accountCode, final String apiKey);
+	
+	/**
+	 * Gets a list of adjustments for an account.
+	 * 
+	 * @param accountCode the account identifier
+	 * @param state limit the adjustments returned by their state (The state of the adjustments to return: "pending" or "invoiced").
+	 * @return a list of adjustments corresponding to a particular account
+	 */
+	public Adjustments getAccountAdjustments(final String accountCode, final String state, final String apiKey);  
+	
     /**
      * Creates and adjustment on an account.
      * 

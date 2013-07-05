@@ -429,6 +429,16 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 	
 	@Override
+	public Adjustments getAccountAdjustments(final String accountCode, final String state, final String apiKey) {
+		return new ThreadScopedAPIClientCall<Adjustments>(apiKey){
+			@Override
+			Adjustments doCall() {
+				return keyClient.getAccountAdjustments(accountCode, state);
+			}			
+		}.call();
+	}
+	
+	@Override
 	public Adjustment createAdjustment(final String accountCode, final XmlPayloadMap<?, ?> adjustmentData, final String apiKey) {
 		return new ThreadScopedAPIClientCall<Adjustment>(apiKey){
 			@Override
