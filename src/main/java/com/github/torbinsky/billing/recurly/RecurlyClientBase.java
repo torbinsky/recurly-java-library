@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
@@ -46,6 +47,7 @@ import com.github.torbinsky.billing.recurly.model.RecurlyObject;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Response;
 
@@ -296,6 +298,14 @@ public abstract class RecurlyClientBase {
 	protected void doDELETE(final String resource) {
 		callRecurlySafe(client.prepareDelete(baseUrl + resource), null, false);
 	}
+	
+	protected void doDELETE(final String resource, Map<String,String> queryParameters){
+		BoundRequestBuilder prepareDelete = client.prepareDelete(baseUrl + resource); 
+		for(String key : queryParameters.keySet()){
+			prepareDelete = prepareDelete.addQueryParameter(key, queryParameters.get(key)); 
+		}
+		callRecurlySafe(prepareDelete, null, true); 
+	}
 
 	protected <T> T returnSingleResult(List<T> results) {
 		if (!results.isEmpty()) {
@@ -308,7 +318,7 @@ public abstract class RecurlyClientBase {
 
 		return null;
 	}
-
+	
 	protected <T> List<T> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz, final boolean parseResult) {
 		List<String> results = callRecurlySafe(builder);
 		if(parseResult){

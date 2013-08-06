@@ -17,8 +17,10 @@
 
 package com.github.torbinsky.billing.recurly;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,6 +301,12 @@ public class RecurlyClient extends RecurlyClientBase {
     public Transactions getAccountTransactions(final String accountCode) {
         return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Transactions.TRANSACTIONS_RESOURCE,
                      Transactions.class));
+    }
+    
+    public void partialRefundTransaction(final String transactionId, int refundInCents){
+    	Map<String, String> param = new HashMap<>(); 
+    	param.put("amount_in_cents", String.valueOf(refundInCents)); 
+    	doDELETE(Transactions.TRANSACTIONS_RESOURCE + "/" + transactionId, param); 
     }
 
     /**
