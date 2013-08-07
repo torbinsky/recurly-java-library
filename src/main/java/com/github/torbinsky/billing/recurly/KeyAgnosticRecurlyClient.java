@@ -276,6 +276,15 @@ public interface KeyAgnosticRecurlyClient {
 	public Transaction createTransaction(final XmlPayloadMap<?, ?> trans, final String apiKey);
 	
 	/**
+	 * Attempts a refund on a {@link Transaction} through the Recurly API. 
+	 * See: http://docs.recurly.com/api/transactions
+	 * @param transactionId
+	 * @param refundInCents
+	 * @param apiKey
+	 */
+	public void partialRefundTransaction(final String transactionId, int refundInCents, final String apiKey);
+	
+	/**
 	 * @param accountCode Recurly account code
 	 * @param apiKey Recurly api key
 	 * @return an account's "active" {@link Redemption} or null 

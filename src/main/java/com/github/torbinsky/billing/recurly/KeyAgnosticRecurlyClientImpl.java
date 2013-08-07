@@ -223,6 +223,17 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 			}			
 		}.call();
 	}
+	
+	@Override
+	public void partialRefundTransaction(final String transactionId, final int refundInCents, String apiKey) {
+		new ThreadScopedAPIClientCall<Void>(apiKey){
+			@Override
+			Void doCall() {
+				keyClient.partialRefundTransaction(transactionId, refundInCents);
+				return null; 
+			}
+		}.call(); 
+	}
 
 	@Override
 	public Invoices getAccountInvoices(final String accountCode, String apiKey) {
@@ -519,5 +530,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 		 */
 		abstract T doCall();
 	}
+
+
 
 }
