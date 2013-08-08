@@ -31,7 +31,7 @@ public class Transaction extends RecurlyObject {
     private Invoice invoice;
 
     @XmlElement(name = "subscription")
-    private String subscription;
+    private Subscription subscription;
 
     @XmlElement(name = "uuid")
     private String uuid;
@@ -82,12 +82,12 @@ public class Transaction extends RecurlyObject {
         this.invoice = invoice;
     }
 
-    public String getSubscription() {
+    public Subscription getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(final Object subscription) {
-        this.subscription = stringOrNull(subscription);
+    public void setSubscription(final Subscription subscription) {
+        this.subscription = subscription;
     }
 
     public String getUuid() {
