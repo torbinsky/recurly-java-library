@@ -16,14 +16,26 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.joda.time.DateTime;
 
 @XmlRootElement(name = "transaction")
 public class Transaction extends RecurlyObject {
+    @XmlTransient
+    public static final String TRANSACTION_RESOURCE = "/transactions";
 
+    @XmlTransient
+    public static final Pattern TRANSACTION_CODE_PATTERN = Pattern.compile(TRANSACTION_RESOURCE + "/(.+)$");
+
+    @XmlTransient
+    private String href; 
+    
     @XmlElement(name = "account")
     private Account account;
 
@@ -275,4 +287,19 @@ public class Transaction extends RecurlyObject {
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
         return result;
     }
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+	        this.href = stringOrNull(href);
+	        // If there was an href try to parse out the account code since
+	        // Recurly doesn't currently provide it elsewhere.
+	        if (this.href != null) {
+	            Matcher m = TRANSACTION_CODE_PATTERN.matcher(this.href);
+	            if (m.find()) {
+	                setUuid(m.group(1));
+	            }
+	        }	
+        }    
 }

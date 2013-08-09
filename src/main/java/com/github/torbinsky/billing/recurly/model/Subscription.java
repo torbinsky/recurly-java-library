@@ -16,14 +16,27 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.joda.time.DateTime;
 
 @XmlRootElement(name = "subscription")
 public class Subscription extends AbstractSubscription {
+	
+    @XmlTransient
+    public static final String SUBSCRIPTION_RESOURCE = "/subscriptions";
 
+    @XmlTransient
+    public static final Pattern SUBSCRIPTION_CODE_PATTERN = Pattern.compile(SUBSCRIPTION_RESOURCE + "/(.+)$");
+	
+    @XmlTransient
+    private String href; 
+    
     @XmlElement(name = "account")
     private Account account;
 
@@ -260,4 +273,20 @@ public class Subscription extends AbstractSubscription {
         result = 31 * result + (addOns != null ? addOns.hashCode() : 0);
         return result;
     }
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+	        this.href = stringOrNull(href);
+	        // If there was an href try to parse out the account code since
+	        // Recurly doesn't currently provide it elsewhere.
+	        if (this.href != null) {
+	            Matcher m = SUBSCRIPTION_CODE_PATTERN.matcher(this.href);
+	            if (m.find()) {
+	                setUuid(m.group(1));
+	            }
+	        }	
+        }
 }

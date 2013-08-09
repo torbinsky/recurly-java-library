@@ -165,15 +165,17 @@ public abstract class RecurlyClientBase {
 	protected <T> List<T> doGETs(final String resource, final Class<T> clazz) {
 		return doGETs(resource, null, clazz);
 	}
+	
+	protected <T> List<T> doGETsByUrl(final String url, final Class<T> clazz){
+		if(debug()){
+			log.info("Msg to Recurly API [GET] :: URL : {}", url); 
+		}
+		return callRecurlySafe(client.prepareGet(url.toString()), clazz, true); 
+	}
 
 	protected <T> List<T> doGETs(final String resource, String paramString, final Class<T> clazz) {
 		String url = buildRecurlyUrl(resource, paramString);
-
-		if (debug()) {
-			log.info("Msg to Recurly API [GET] :: URL : {}", url);
-		}
-
-		return callRecurlySafe(client.prepareGet(url.toString()), clazz, true);
+		return doGETsByUrl(url, clazz); 
 	}
 
 	protected List<String> doGET(final String resource, String paramString) {
@@ -268,6 +270,10 @@ public abstract class RecurlyClientBase {
 
 	protected <T> T doGET(final String resource, final Class<T> clazz) {
 		return doGET(resource, null, clazz);
+	}
+	
+	protected <T> T doGETByUrl(final String url, final Class<T> clazz){
+		return returnSingleResult(doGETsByUrl(url, clazz)); 
 	}
 
 	protected <T> T doGET(final String resource, String paramString, final Class<T> clazz) {

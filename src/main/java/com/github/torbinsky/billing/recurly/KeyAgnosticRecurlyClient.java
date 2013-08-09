@@ -144,6 +144,7 @@ public interface KeyAgnosticRecurlyClient {
 	 */
 	public Subscription getSubscription(final String uuid, final String apiKey);
 
+	
 	/**
 	 * Cancel a subscription
 	 * <p/>
@@ -265,6 +266,7 @@ public interface KeyAgnosticRecurlyClient {
 	 *         null otherwise
 	 */
 	public Transactions getAccountTransactions(final String accountCode, final String apiKey);
+	
 
 	/**
 	 * Creates a {@link Transaction} throgh the Recurly API.
@@ -315,6 +317,7 @@ public interface KeyAgnosticRecurlyClient {
 	 */
 	public Invoices getAccountInvoices(final String accountCode, final String apiKey);
 	
+
 	/**
      * Lookup an account's invoices
      * <p/>

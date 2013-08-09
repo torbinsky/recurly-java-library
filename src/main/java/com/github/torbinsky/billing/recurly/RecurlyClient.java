@@ -111,6 +111,7 @@ public class RecurlyClient extends RecurlyClientBase {
     public Account getAccount(final String accountCode) {
         return doGET(Account.ACCOUNT_RESOURCE + "/" + accountCode, Account.class);
     }
+    
 
     /**
      * Update Account
@@ -165,6 +166,7 @@ public class RecurlyClient extends RecurlyClientBase {
                      + "/" + uuid,
                      Subscription.class);
     }
+    
 
     /**
      * Cancel a subscription
@@ -303,6 +305,8 @@ public class RecurlyClient extends RecurlyClientBase {
                      Transactions.class));
     }
     
+
+    
     public void partialRefundTransaction(final String transactionId, int refundInCents){
     	Map<String, String> param = new HashMap<>(); 
     	param.put("amount_in_cents", String.valueOf(refundInCents)); 
@@ -374,6 +378,7 @@ public class RecurlyClient extends RecurlyClientBase {
         			 "&state="+stateQuery,
                      Invoices.class));
     }
+    
     
     /**
      * Lookup an account's collected invoices

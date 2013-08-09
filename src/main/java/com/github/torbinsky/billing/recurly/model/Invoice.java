@@ -18,17 +18,28 @@
 package com.github.torbinsky.billing.recurly.model;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @XmlRootElement(name = "invoice")
 public class Invoice extends RecurlyObject {
 
-    @XmlElement(name = "account")
+	@XmlTransient
+	public static final String INVOICE_RESOURCE = "/invoices"; 
+	
+	@XmlTransient
+    private static final Pattern INVOICE_CODE_PATTERN = Pattern.compile(INVOICE_RESOURCE + "/(.+)$");
+
+	@XmlElement(name = "account")
     private Account account;
 
     @XmlElement(name = "uuid")
@@ -36,6 +47,9 @@ public class Invoice extends RecurlyObject {
 
     @XmlElement(name = "state")
     private String state;
+    
+    @XmlTransient
+    private String href; 
 
     @XmlElement(name = "invoice_number")
     private Integer invoiceNumber;
@@ -265,4 +279,19 @@ public class Invoice extends RecurlyObject {
         result = 31 * result + (transactions != null ? transactions.hashCode() : 0);
         return result;
     }
+
+    @JsonIgnore
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = stringOrNull(href);
+		if(this.href != null){
+			Matcher m = INVOICE_CODE_PATTERN.matcher(this.href); 
+			if(m.find()){
+				setInvoiceNumber(m.group(1)); 
+			}
+		}
+	}
 }
