@@ -540,6 +540,16 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 			}			
 		}.call();	}
 
+	@Override
+	public Transaction getTransaction(final String uuid, String apiKey) {
+		return new ThreadScopedAPIClientCall<Transaction>(apiKey){
+			@Override
+			Transaction doCall() {
+				return keyClient.getTransaction(uuid);
+			}			
+		}.call();		
+	}
+
 
 
 }

@@ -267,6 +267,12 @@ public interface KeyAgnosticRecurlyClient {
 	 */
 	public Transactions getAccountTransactions(final String accountCode, final String apiKey);
 	
+	/**
+	 * Get a transaction by its UUID
+	 * @param uuid
+	 * @return
+	 */
+    public Transaction getTransaction(final String uuid, String apiKey);
 
 	/**
 	 * Creates a {@link Transaction} throgh the Recurly API.

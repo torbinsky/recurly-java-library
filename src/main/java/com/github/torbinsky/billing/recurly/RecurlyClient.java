@@ -305,6 +305,9 @@ public class RecurlyClient extends RecurlyClientBase {
                      Transactions.class));
     }
     
+    public Transaction getTransaction(final String uuid){
+    	return doGET(Transactions.TRANSACTIONS_RESOURCE + "/" + uuid, Transaction.class); 
+    }
 
     
     public void partialRefundTransaction(final String transactionId, int refundInCents){
