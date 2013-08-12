@@ -310,7 +310,7 @@ public abstract class RecurlyClientBase {
 		for(String key : queryParameters.keySet()){
 			prepareDelete = prepareDelete.addQueryParameter(key, queryParameters.get(key)); 
 		}
-		callRecurlySafe(prepareDelete, null, true); 
+		callRecurlySafe(prepareDelete, null, false); 
 	}
 
 	protected <T> T returnSingleResult(List<T> results) {
