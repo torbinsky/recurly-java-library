@@ -244,6 +244,15 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 			}			
 		}.call();
 	}
+	
+	@Override
+	public Invoice getInvoice(final String invoiceNumber, String apiKey) {
+		return new ThreadScopedAPIClientCall<Invoice>(apiKey){
+			@Override
+			Invoice doCall() {
+				return keyClient.getInvoice(invoiceNumber);
+			}			
+		}.call();	}
 
 	@Override
 	public Plan createPlan(final XmlPayloadMap<?, ?> plan, String apiKey) {

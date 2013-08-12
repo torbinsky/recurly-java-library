@@ -382,6 +382,10 @@ public class RecurlyClient extends RecurlyClientBase {
                      Invoices.class));
     }
     
+    public Invoice getInvoice(final String invoiceNumber){
+    	return doGET(Invoices.INVOICES_RESOURCE + "/" + invoiceNumber, Invoice.class); 
+    }
+    
     
     /**
      * Lookup an account's collected invoices

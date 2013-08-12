@@ -325,6 +325,14 @@ public interface KeyAgnosticRecurlyClient {
 	
 
 	/**
+	 * Get an invoice by its invoice number. 
+	 * @param invoiceNumber
+	 * @return
+	 */
+    public Invoice getInvoice(final String invoiceNumber, String apiKey);
+
+
+	/**
      * Lookup an account's invoices
      * <p/>
      * Returns the account's invoices
