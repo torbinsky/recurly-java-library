@@ -502,6 +502,14 @@ public interface KeyAgnosticRecurlyClient {
 	 */
 	public Adjustments getAccountAdjustments(final String accountCode, final String state, final String apiKey);  
 	
+	/**
+	 * Get a single adjustment based on its uuid
+	 * @param uuid
+	 * @param apiKey
+	 * @return 
+	 */
+	public Adjustment getAdjustment(final String uuid, final String apiKey);
+	
     /**
      * Creates and adjustment on an account.
      * 

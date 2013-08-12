@@ -407,6 +407,10 @@ public class RecurlyClient extends RecurlyClientBase {
 	///////////////////////////////////////////////////////////////////////////
 	// Account Adjustments
     
+    public Adjustment getAdjustment(final String uuid){
+    	return doGET(Adjustments.ADJUSTMENTS_RESOURCE + "/" + uuid, Adjustment.class);
+    }
+    
     public Adjustments getAccountAdjustments(final String accountCode){
     	return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
                 + "/" + accountCode
