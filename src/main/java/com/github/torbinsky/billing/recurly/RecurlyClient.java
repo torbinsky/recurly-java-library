@@ -273,8 +273,17 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the current billing info object associated with this account on success, null otherwise
      */
     public BillingInfo getBillingInfo(final String accountCode) {
-        return doGET(Account.ACCOUNT_RESOURCE + "/" + accountCode + BillingInfo.BILLING_INFO_RESOURCE,
-                     BillingInfo.class);
+    	try{
+            return doGET(Account.ACCOUNT_RESOURCE + "/" + accountCode + BillingInfo.BILLING_INFO_RESOURCE,
+                    BillingInfo.class);
+    	}catch(RecurlyAPIException e){
+    		if(e.getMessage().contains("Couldn't find BillingInfo with account_code")){
+    			return null;
+    		}
+    		// Some other problem occurred, re-throw the exception
+    		throw e;
+    	}
+        
     }
 
     /**
