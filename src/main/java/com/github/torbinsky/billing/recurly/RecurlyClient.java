@@ -17,6 +17,8 @@
 
 package com.github.torbinsky.billing.recurly;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -109,7 +111,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return account object on success, null otherwise
      */
     public Account getAccount(final String accountCode) {
-        return doGET(Account.ACCOUNT_RESOURCE + "/" + accountCode, Account.class);
+        try {
+			return doGET(Account.ACCOUNT_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8"), Account.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
 
@@ -123,7 +129,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the updated account object on success, null otherwise
      */
     public Account updateAccount(final String accountCode, final XmlPayloadMap<?, ?> account) {
-        return doPUT(Account.ACCOUNT_RESOURCE + "/" + accountCode, account, Account.class);
+    	try {
+    		return doPUT(Account.ACCOUNT_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8"), account, Account.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -135,7 +145,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param accountCode recurly account id
      */
     public void closeAccount(final String accountCode) {
-        doDELETE(Account.ACCOUNT_RESOURCE + "/" + accountCode);
+    	try {
+    		doDELETE(Account.ACCOUNT_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -162,9 +176,13 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return Subscriptions for the specified user
      */
     public Subscription getSubscription(final String uuid) {
-        return doGET(Subscriptions.SUBSCRIPTIONS_RESOURCE
-                     + "/" + uuid,
-                     Subscription.class);
+    	try {
+	        return doGET(Subscriptions.SUBSCRIPTIONS_RESOURCE
+	                     + "/" + URLEncoder.encode(uuid, "UTF-8"),
+	                     Subscription.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
 
@@ -177,8 +195,12 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return -?-
      */
     public Subscription cancelSubscription(final Subscription subscription) {
-        return doPUT(Subscription.SUBSCRIPTION_RESOURCE + "/" + subscription.getUuid() + "/cancel",
-                     subscription, Subscription.class);
+    	try {
+	        return doPUT(Subscription.SUBSCRIPTION_RESOURCE + "/" + URLEncoder.encode(subscription.getUuid(), "UTF-8") + "/cancel",
+	                     subscription, Subscription.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -190,8 +212,12 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return -?-
      */
     public Subscription reactivateSubscription(final Subscription subscription) {
-        return doPUT(Subscription.SUBSCRIPTION_RESOURCE + "/" + subscription.getUuid() + "/reactivate",
-                     subscription, Subscription.class);
+    	try {
+	        return doPUT(Subscription.SUBSCRIPTION_RESOURCE + "/" + URLEncoder.encode(subscription.getUuid(), "UTF-8") + "/reactivate",
+	                     subscription, Subscription.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -203,10 +229,14 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return Subscription the updated subscription
      */
     public Subscription updateSubscription(final String uuid, final XmlPayloadMap<?, ?> subscriptionUpdate) {
-        return doPUT(Subscriptions.SUBSCRIPTIONS_RESOURCE
-                     + "/" + uuid,
-                     subscriptionUpdate,
-                     Subscription.class);
+    	try {
+	        return doPUT(Subscriptions.SUBSCRIPTIONS_RESOURCE
+	                     + "/" + URLEncoder.encode(uuid, "UTF-8"),
+	                     subscriptionUpdate,
+	                     Subscription.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -218,9 +248,13 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return Subscriptions for the specified user
      */
     public Subscriptions getAccountSubscriptions(final String accountCode) {
-        return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
-                     + "/" + accountCode
-                     + Subscriptions.SUBSCRIPTIONS_RESOURCE, Subscriptions.class));
+    	try {
+	        return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
+	                     + "/" + URLEncoder.encode(accountCode, "UTF-8")
+	                     + Subscriptions.SUBSCRIPTIONS_RESOURCE, Subscriptions.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -233,12 +267,16 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return Subscriptions for the specified user
      */
     public Subscriptions getAccountSubscriptions(final String accountCode, final String status) {
-        return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
-                     + "/" + accountCode
-                     + Subscriptions.SUBSCRIPTIONS_RESOURCE
-                     + "?state="
-                     + status,
-                     Subscriptions.class));
+    	try {
+	        return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
+	                     + "/" + URLEncoder.encode(accountCode, "UTF-8")
+	                     + Subscriptions.SUBSCRIPTIONS_RESOURCE
+	                     + "?state="
+	                     + URLEncoder.encode(status, "UTF-8"),
+	                     Subscriptions.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -260,8 +298,12 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the newly created or update billing info object on success, null otherwise
      */
     public BillingInfo createOrUpdateBillingInfo(final XmlPayloadMap<?, ?> billingInfo, String accountCode) {
-        return doPUT(Account.ACCOUNT_RESOURCE + "/" + accountCode + BillingInfo.BILLING_INFO_RESOURCE,
-                     billingInfo, BillingInfo.class);
+    	try {
+	        return doPUT(Account.ACCOUNT_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + BillingInfo.BILLING_INFO_RESOURCE,
+	                     billingInfo, BillingInfo.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -295,7 +337,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param accountCode recurly account id
      */
     public void clearBillingInfo(final String accountCode) {
-        doDELETE(Account.ACCOUNT_RESOURCE + "/" + accountCode + BillingInfo.BILLING_INFO_RESOURCE);
+    	try {
+    		doDELETE(Account.ACCOUNT_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + BillingInfo.BILLING_INFO_RESOURCE);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -310,19 +356,31 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the transaction history associated with this account on success, null otherwise
      */
     public Transactions getAccountTransactions(final String accountCode) {
-        return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Transactions.TRANSACTIONS_RESOURCE,
-                     Transactions.class));
+    	try {
+	        return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + Transactions.TRANSACTIONS_RESOURCE,
+	                     Transactions.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     public Transaction getTransaction(final String uuid){
-    	return doGET(Transactions.TRANSACTIONS_RESOURCE + "/" + uuid, Transaction.class); 
+    	try {
+    		return doGET(Transactions.TRANSACTIONS_RESOURCE + "/" + URLEncoder.encode(uuid, "UTF-8"), Transaction.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     
     public void partialRefundTransaction(final String transactionId, int refundInCents){
-    	Map<String, String> param = new HashMap<>(); 
-    	param.put("amount_in_cents", String.valueOf(refundInCents)); 
-    	doDELETE(Transactions.TRANSACTIONS_RESOURCE + "/" + transactionId, param); 
+    	try {
+	    	Map<String, String> param = new HashMap<>(); 
+	    	param.put("amount_in_cents", String.valueOf(refundInCents)); 
+	    	doDELETE(Transactions.TRANSACTIONS_RESOURCE + "/" + URLEncoder.encode(transactionId, "UTF-8"), param);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -332,7 +390,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return The created {@link Transaction} object
      */
     public Transaction createTransaction(final XmlPayloadMap<?, ?> trans) {
-        return doPOST(Transactions.TRANSACTIONS_RESOURCE, trans, Transaction.class);
+   		return doPOST(Transactions.TRANSACTIONS_RESOURCE, trans, Transaction.class);
     }
     
 	///////////////////////////////////////////////////////////////////////////
@@ -343,7 +401,7 @@ public class RecurlyClient extends RecurlyClientBase {
      */
     public Redemption getAccountRedemption(final String accountCode){
     	try{
-	    	return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Redemption.REDEMPTIONS_RESOURCE,
+	    	return doGET(Accounts.ACCOUNTS_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + Redemption.REDEMPTIONS_RESOURCE,
 	    			Redemption.class);
     	}catch(RecurlyAPIException e){
     		if(e.getMessage().contains("Couldn't find Redemption for Account")){
@@ -351,7 +409,9 @@ public class RecurlyClient extends RecurlyClientBase {
     		}
     		// Some other problem occurred, re-throw the exception
     		throw e;
-    	}
+    	} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     /**
@@ -360,7 +420,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * Redeems a coupon with the matching code
      */
     public CouponRedeem redeemCoupon(final String couponCode, final XmlPayloadMap<?, ?> couponRedeem) {
-        return doPOST(Coupon.COUPON_RESOURCE + "/" + couponCode + CouponRedeem.COUPON_REDEEM_RESOURCE, couponRedeem, CouponRedeem.class);
+    	try {
+    		return doPOST(Coupon.COUPON_RESOURCE + "/" + URLEncoder.encode(couponCode, "UTF-8") + CouponRedeem.COUPON_REDEEM_RESOURCE, couponRedeem, CouponRedeem.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     /**
@@ -369,7 +433,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * Deactivates a coupon with the matching code
      */
     public void deactivateCoupon(final String couponCode) {
-        doDELETE(Coupon.COUPON_RESOURCE + "/" + couponCode);
+    	try {
+    		doDELETE(Coupon.COUPON_RESOURCE + "/" + URLEncoder.encode(couponCode, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 	///////////////////////////////////////////////////////////////////////////
 
@@ -386,13 +454,21 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountInvoices(final String accountCode, String stateQuery) {
-        return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + accountCode + Invoices.INVOICES_RESOURCE,
-        			 "&state="+stateQuery,
-                     Invoices.class));
+    	try {
+	        return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + Invoices.INVOICES_RESOURCE,
+	        			 "&state="+stateQuery,
+	                     Invoices.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     public Invoice getInvoice(final String invoiceNumber){
-    	return doGET(Invoices.INVOICES_RESOURCE + "/" + invoiceNumber, Invoice.class); 
+    	try {
+    		return doGET(Invoices.INVOICES_RESOURCE + "/" + URLEncoder.encode(invoiceNumber, "UTF-8"), Invoice.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     
@@ -405,7 +481,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountCollectedInvoices(final String accountCode) {
-        return getAccountInvoices(accountCode, "collected");
+    	try {
+    		return getAccountInvoices(URLEncoder.encode(accountCode, "UTF-8"), "collected");
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     /**
@@ -417,38 +497,62 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountInvoices(final String accountCode) {
-        return getAccountInvoices(accountCode, "all");
+    	try {
+    		return getAccountInvoices(URLEncoder.encode(accountCode, "UTF-8"), "all");
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
 	///////////////////////////////////////////////////////////////////////////
 	// Account Adjustments
     
     public Adjustment getAdjustment(final String uuid){
-    	return doGET(Adjustments.ADJUSTMENTS_RESOURCE + "/" + uuid, Adjustment.class);
+    	try {
+    		return doGET(Adjustments.ADJUSTMENTS_RESOURCE + "/" + URLEncoder.encode(uuid, "UTF-8"), Adjustment.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     public Adjustments getAccountAdjustments(final String accountCode){
-    	return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
-                + "/" + accountCode
-                + Adjustments.ADJUSTMENTS_RESOURCE, Adjustments.class));
+    	try {
+	    	return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
+	                + "/" + URLEncoder.encode(accountCode, "UTF-8")
+	                + Adjustments.ADJUSTMENTS_RESOURCE, Adjustments.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     public Adjustments getAccountAdjustments(final String accountCode, final String state){
-    	return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
-                + "/" + accountCode
-                + Adjustments.ADJUSTMENTS_RESOURCE, "&state=" + state, Adjustments.class));
+    	try {
+	    	return depaginateResults(doGETs(Account.ACCOUNT_RESOURCE
+	                + "/" + URLEncoder.encode(accountCode, "UTF-8")
+	                + Adjustments.ADJUSTMENTS_RESOURCE, "&state=" + state, Adjustments.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     public Adjustment createAdjustment(final String accountCode, final XmlPayloadMap<?, ?> adjustmentData){
-    	return doPOST(
-    			Account.ACCOUNT_RESOURCE + "/" + accountCode + Adjustments.ADJUSTMENTS_RESOURCE, 
-    			adjustmentData,
-    			Adjustment.class
-    		);
+    	try {
+	    	return doPOST(
+	    			Account.ACCOUNT_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + Adjustments.ADJUSTMENTS_RESOURCE, 
+	    			adjustmentData,
+	    			Adjustment.class
+	    		);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     public void deleteAdjustment(final String adjustmentUUID){
-    	doDELETE(Adjustments.ADJUSTMENTS_RESOURCE + "/" + adjustmentUUID);
+    	try {
+    		doDELETE(Adjustments.ADJUSTMENTS_RESOURCE + "/" + URLEncoder.encode(adjustmentUUID, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     ///////////////////////////////////////////////////////////////////////////
@@ -461,7 +565,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the plan object as identified by the passed in ID
      */
     public Plan createPlan(final XmlPayloadMap<?, ?> plan) {
-        return doPOST(Plan.PLANS_RESOURCE, plan, Plan.class);
+   		return doPOST(Plan.PLANS_RESOURCE, plan, Plan.class);
     }
 
     /**
@@ -472,7 +576,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the plan object as identified by the passed in ID
      */
     public Plan getPlan(final String planCode) {
-        return doGET(Plan.PLANS_RESOURCE + "/" + planCode, Plan.class);
+    	try {
+    		return doGET(Plan.PLANS_RESOURCE + "/" + URLEncoder.encode(planCode, "UTF-8"), Plan.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -482,7 +590,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the plan object as identified by the passed in ID
      */
     public Plans getPlans() {
-        return depaginateResults(doGETs(Plans.PLANS_RESOURCE, Plans.class));
+   		return depaginateResults(doGETs(Plans.PLANS_RESOURCE, Plans.class));
     }
 
     /**
@@ -492,9 +600,13 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param planCode The {@link Plan} object to delete.
      */
     public void deletePlan(final String planCode) {
-        doDELETE(Plan.PLANS_RESOURCE +
-                 "/" +
-                 planCode);
+    	try {
+	        doDELETE(Plan.PLANS_RESOURCE +
+	                 "/" +
+	                 URLEncoder.encode(planCode, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -508,11 +620,15 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the {@link AddOn} object as identified by the passed in object
      */
     public AddOn createPlanAddOn(final String planCode, final XmlPayloadMap<?, ?> addOn) {
-        return doPOST(Plan.PLANS_RESOURCE +
-                      "/" +
-                      planCode +
-                      AddOn.ADDONS_RESOURCE,
-                      addOn, AddOn.class);
+    	try {
+	        return doPOST(Plan.PLANS_RESOURCE +
+	                      "/" +
+	                      URLEncoder.encode(planCode, "UTF-8") +
+	                      AddOn.ADDONS_RESOURCE,
+	                      addOn, AddOn.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -524,12 +640,16 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the {@link AddOn} object as identified by the passed in plan and add-on IDs
      */
     public AddOn getAddOn(final String planCode, final String addOnCode) {
-        return doGET(Plan.PLANS_RESOURCE +
-                     "/" +
-                     planCode +
-                     AddOn.ADDONS_RESOURCE +
-                     "/" +
-                     addOnCode, AddOn.class);
+    	try {
+	        return doGET(Plan.PLANS_RESOURCE +
+	                     "/" +
+	                     URLEncoder.encode(planCode, "UTF-8") +
+	                     AddOn.ADDONS_RESOURCE +
+	                     "/" +
+	                     URLEncoder.encode(addOnCode, "UTF-8"), AddOn.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -539,10 +659,14 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the {@link AddOn} objects as identified by the passed plan ID
      */
     public AddOn getAddOns(final String planCode) {
-        return doGET(Plan.PLANS_RESOURCE +
-                     "/" +
-                     planCode +
-                     AddOn.ADDONS_RESOURCE, AddOn.class);
+    	try {
+	        return doGET(Plan.PLANS_RESOURCE +
+	                     "/" +
+	                     URLEncoder.encode(planCode, "UTF-8") +
+	                     AddOn.ADDONS_RESOURCE, AddOn.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     /**
@@ -553,12 +677,16 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param addOnCode The {@link AddOn} object to delete.
      */
     public void deleteAddOn(final String planCode, final String addOnCode) {
-        doDELETE(Plan.PLANS_RESOURCE +
-                 "/" +
-                 planCode +
-                 AddOn.ADDONS_RESOURCE +
-                 "/" +
-                 addOnCode);
+    	try {
+	        doDELETE(Plan.PLANS_RESOURCE +
+	                 "/" +
+	                 URLEncoder.encode(planCode, "UTF-8") +
+	                 AddOn.ADDONS_RESOURCE +
+	                 "/" +
+	                 URLEncoder.encode(addOnCode, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -571,7 +699,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the {@link Coupon} object
      */
     public Coupon createCoupon(final XmlPayloadMap<?, ?> coupon) {
-        return doPOST(Coupon.COUPON_RESOURCE, coupon, Coupon.class);
+   		return doPOST(Coupon.COUPON_RESOURCE, coupon, Coupon.class);
     }
 
     /**
@@ -582,7 +710,11 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return The {@link Coupon} object as identified by the passed in code
      */
     public Coupon getCoupon(final String couponCode) {
-        return doGET(Coupon.COUPON_RESOURCE + "/" + couponCode, Coupon.class);
+    	try {
+    		return doGET(Coupon.COUPON_RESOURCE + "/" + URLEncoder.encode(couponCode, "UTF-8"), Coupon.class);
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
     }
     
     
@@ -601,7 +733,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return subscription object on success, null otherwise
      */
     public Subscription fetchSubscription(final String recurlyToken) {
-        return fetch(recurlyToken, Subscription.class);
+   		return fetch(recurlyToken, Subscription.class);
     }
 
     /**
@@ -613,7 +745,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return billing info object on success, null otherwise
      */
     public BillingInfo fetchBillingInfo(final String recurlyToken) {
-        return fetch(recurlyToken, BillingInfo.class);
+   		return fetch(recurlyToken, BillingInfo.class);
     }
 
     /**
@@ -625,7 +757,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return invoice object on success, null otherwise
      */
     public Invoice fetchInvoice(final String recurlyToken) {
-        return fetch(recurlyToken, Invoice.class);
+   		return fetch(recurlyToken, Invoice.class);
     }
     
     private <R extends RecurlyObject, T extends RecurlyObjects<R>> T depaginateResults(List<T> results){
