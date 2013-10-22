@@ -50,7 +50,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	public KeyAgnosticRecurlyClientImpl() {
 		keyClient = new RecurlyClient(null);
 	}
-
+	
 	@Override
 	public Account createAccount(final XmlPayloadMap<?, ?> account, String apiKey) {
 		return new ThreadScopedAPIClientCall<Account>(apiKey){

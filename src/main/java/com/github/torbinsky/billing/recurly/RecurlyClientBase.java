@@ -356,9 +356,9 @@ public abstract class RecurlyClientBase {
 						@Override
 						public RecurlyAPICallResults<String> onCompleted(final Response response) throws Exception {						
 							if (response.getStatusCode() >= 300) {
-								log.debug("Recurly error whilst calling: {}", response.getUri());
+								log.debug("Recurly error whilst calling: status[{}] body{}", response.getStatusCode(), response.getUri());
 								log.debug("Recurly error: {}", response.getResponseBody());
-								throw new RecurlyAPIException("Recurly error: " + response.getResponseBody());
+								throw new RecurlyAPIException("Recurly error status:[" + response.getStatusCode() + "] error body: " + response.getResponseBody());
 							}
 
 							final InputStream in = response.getResponseBodyAsStream();
@@ -461,6 +461,7 @@ public abstract class RecurlyClientBase {
 		// See https://github.com/ning/async-http-client/issues/issue/28
 		final AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
 		builder.setMaximumConnectionsPerHost(-1);
+		builder.setUserAgent("");
 		return new AsyncHttpClient(builder.build());
 	}
 
