@@ -18,10 +18,12 @@ package com.github.torbinsky.billing.recurly.exception;
 /**
  * @author torben
  * 
- * This exception is thrown on a Recurly API failure. It wraps the the original cause of the exception (i.e. an IOException etc...)
+ *         This exception is thrown on a Recurly API failure. It wraps the the
+ *         original cause of the exception (i.e. an IOException etc...)
  * 
  */
 public class RecurlyAPIException extends RecurlyException {
+	private int errorCode = -1;
 
 	public RecurlyAPIException() {
 		super();
@@ -39,8 +41,17 @@ public class RecurlyAPIException extends RecurlyException {
 		super(message);
 	}
 
+	public RecurlyAPIException(String message, int errorCode) {
+		super(message);
+		this.errorCode = errorCode;
+	}
+
 	public RecurlyAPIException(Throwable cause) {
 		super(cause);
+	}
+
+	public int getErrorCode() {
+		return errorCode;
 	}
 
 }

@@ -358,7 +358,7 @@ public abstract class RecurlyClientBase {
 							if (response.getStatusCode() >= 300) {
 								log.debug("Recurly error whilst calling: status[{}] body{}", response.getStatusCode(), response.getUri());
 								log.debug("Recurly error: {}", response.getResponseBody());
-								throw new RecurlyAPIException("Recurly error status:[" + response.getStatusCode() + "] error body: " + response.getResponseBody());
+								throw new RecurlyAPIException("Recurly error status:[" + response.getStatusCode() + "] error body: " + response.getResponseBody(), response.getStatusCode());
 							}
 
 							final InputStream in = response.getResponseBodyAsStream();
