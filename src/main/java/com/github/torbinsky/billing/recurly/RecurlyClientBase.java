@@ -465,7 +465,7 @@ public abstract class RecurlyClientBase {
 		return new AsyncHttpClient(builder.build());
 	}
 
-	class RecurlyAPICallResults<T> {
+	protected class RecurlyAPICallResults<T> {
 		private String nextPageUrl = null;
 		private List<T> results = new ArrayList<>();
 
