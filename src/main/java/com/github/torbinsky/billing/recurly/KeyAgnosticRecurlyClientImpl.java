@@ -45,7 +45,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	/**
 	 * We wrap this so we can use different keys during runtime.
 	 */
-	private final RecurlyClient keyClient;
+	protected final RecurlyClient keyClient;
 
 	public KeyAgnosticRecurlyClientImpl() {
 		keyClient = new RecurlyClient(null);
