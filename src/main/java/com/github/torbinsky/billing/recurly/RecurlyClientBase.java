@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
 import javax.xml.bind.DatatypeConverter;
@@ -351,8 +352,15 @@ public abstract class RecurlyClientBase {
 	
 	protected RecurlyAPICallResults<String> doSinglePageRecurlySafeCall(final AsyncHttpClient.BoundRequestBuilder builder, final RecurlyAPICallResults<String> pageResults, final String requestKey){
 		try {
-			return builder.addHeader("Authorization", "Basic " + requestKey).addHeader("Accept", "application/xml")
+			final AtomicReference<Throwable> tRef = new AtomicReference<>();
+			RecurlyAPICallResults<String> result = builder.addHeader("Authorization", "Basic " + requestKey).addHeader("Accept", "application/xml")
 					.addHeader("Content-Type", "application/xml; charset=utf-8").execute(new AsyncCompletionHandler<RecurlyAPICallResults<String>>() {
+						
+						@Override
+						public void onThrowable(Throwable t) {
+							tRef.set(t); // We do this because it seems that Ning sporadically smothers the exceptions from onCompleted
+						}
+
 						@Override
 						public RecurlyAPICallResults<String> onCompleted(final Response response) throws Exception {						
 							if (response.getStatusCode() >= 300) {
@@ -376,22 +384,44 @@ public abstract class RecurlyClientBase {
 							}
 						}
 					}).get();
+			// TODO: Investigate why sometimes when we encounter exceptions we don't bubble it up but rather Ning somehow smothers it and returns null
+			// ---> Begin hacky workaround <---
+			if(result == null){
+				Throwable encounteredException = tRef.get();
+				// See if we encountered a Recurly API Exception
+				RecurlyAPIException apiE = unwrapRecurlyAPIException(encounteredException);
+				if(apiE != null){
+					throw apiE;
+				}
+				throw new RecurlyException("Execution error", encounteredException);
+			}
+			// ---> End hacky workaround <---
+			
+			return result;
 		} catch (IOException e) {
 			log.warn("Error while calling Recurly", e);
 			throw new RecurlyAPIException("Error while calling Recurly", e);
 		} catch (ExecutionException e) {
 			Throwable t = e;
 			// Unwrap any of the API exceptions
-			while ((t = t.getCause()) != null) {
-				if (t instanceof RecurlyAPIException) {
-					throw (RecurlyAPIException) t;
-				}
+			RecurlyAPIException apiE = unwrapRecurlyAPIException(t);
+			if(apiE != null){
+				throw apiE;
 			}
 			throw new RecurlyException("Execution error", e);
 		} catch (InterruptedException e) {
 			log.error("Interrupted while calling Recurly", e);
 			throw new RecurlyException("Interrupted while calling Recurly", e);
 		}
+	}
+	
+	public static RecurlyAPIException unwrapRecurlyAPIException(Throwable t){
+		while ((t = t.getCause()) != null) {
+			if (t instanceof RecurlyAPIException) {
+				return (RecurlyAPIException) t;
+			}
+		}
+		return null;
 	}
 
 	private String getPageUrlFromResponseHeader(Response response) {
