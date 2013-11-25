@@ -388,12 +388,17 @@ public abstract class RecurlyClientBase {
 			// ---> Begin hacky workaround <---
 			if(result == null){
 				Throwable encounteredException = tRef.get();
+				log.debug("Received a null result which may have been caused by an exception[" + encounteredException + "] that was smothered.");
 				// See if we encountered a Recurly API Exception
 				RecurlyAPIException apiE = unwrapRecurlyAPIException(encounteredException);
 				if(apiE != null){
 					throw apiE;
 				}
-				throw new RecurlyException("Execution error", encounteredException);
+				if(encounteredException != null){
+					throw new RecurlyException("Execution error", encounteredException);
+				}else{
+					throw new RecurlyException("Unable to retrieve a result but no exception was encountered.");
+				}
 			}
 			// ---> End hacky workaround <---
 			
