@@ -416,11 +416,13 @@ public abstract class RecurlyClientBase {
 	}
 	
 	public static RecurlyAPIException unwrapRecurlyAPIException(Throwable t){
-		while ((t = t.getCause()) != null) {
+		do {
 			if (t instanceof RecurlyAPIException) {
 				return (RecurlyAPIException) t;
 			}
-		}
+			t = t.getCause();
+		}while(t != null);
+		
 		return null;
 	}
 
