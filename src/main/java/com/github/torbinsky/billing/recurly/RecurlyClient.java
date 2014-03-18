@@ -324,6 +324,8 @@ public class RecurlyClient extends RecurlyClientBase {
     		}
     		// Some other problem occurred, re-throw the exception
     		throw e;
+    	}catch(UnsupportedEncodingException e){
+			throw new RecurlyAPIException("Invalid Request", e);
     	}
         
     }
