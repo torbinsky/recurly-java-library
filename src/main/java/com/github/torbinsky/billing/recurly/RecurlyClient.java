@@ -316,7 +316,7 @@ public class RecurlyClient extends RecurlyClientBase {
      */
     public BillingInfo getBillingInfo(final String accountCode) {
     	try{
-            return doGET(Account.ACCOUNT_RESOURCE + "/" + accountCode + BillingInfo.BILLING_INFO_RESOURCE,
+            return doGET(Account.ACCOUNT_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + BillingInfo.BILLING_INFO_RESOURCE,
                     BillingInfo.class);
     	}catch(RecurlyAPIException e){
     		if(e.getMessage().contains("Couldn't find BillingInfo with account_code")){
