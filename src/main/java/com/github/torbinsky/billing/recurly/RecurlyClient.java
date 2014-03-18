@@ -483,11 +483,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountCollectedInvoices(final String accountCode) {
-    	try {
     		return getAccountInvoices(accountCode, "collected");
-		} catch (UnsupportedEncodingException e) {
-			throw new RecurlyAPIException("Invalid Request", e);
-		}
     }
     
     /**
@@ -499,11 +495,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountInvoices(final String accountCode) {
-    	try {
     		return getAccountInvoices(accountCode, "all");
-		} catch (UnsupportedEncodingException e) {
-			throw new RecurlyAPIException("Invalid Request", e);
-		}
     }
 
 	///////////////////////////////////////////////////////////////////////////
