@@ -2,12 +2,11 @@
 <metadata>
   <groupId>com.github.torbinsky.billing</groupId>
   <artifactId>recurly-java-library</artifactId>
-  <version>0.2.27-SNAPSHOT</version>
+  <version>0.2.28-SNAPSHOT</version>
   <versioning>
-    <versions>
-      <version>0.2.27-SNAPSHOT</version>
-      <version>0.2.28-SNAPSHOT</version>
-    </versions>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
     <lastUpdated>20140318180901</lastUpdated>
   </versioning>
 </metadata>
