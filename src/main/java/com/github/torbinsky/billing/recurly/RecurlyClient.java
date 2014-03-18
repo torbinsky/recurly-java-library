@@ -484,7 +484,7 @@ public class RecurlyClient extends RecurlyClientBase {
      */
     public Invoices getAccountCollectedInvoices(final String accountCode) {
     	try {
-    		return getAccountInvoices(URLEncoder.encode(accountCode, "UTF-8"), "collected");
+    		return getAccountInvoices(accountCode, "collected");
 		} catch (UnsupportedEncodingException e) {
 			throw new RecurlyAPIException("Invalid Request", e);
 		}
@@ -500,7 +500,7 @@ public class RecurlyClient extends RecurlyClientBase {
      */
     public Invoices getAccountInvoices(final String accountCode) {
     	try {
-    		return getAccountInvoices(URLEncoder.encode(accountCode, "UTF-8"), "all");
+    		return getAccountInvoices(accountCode, "all");
 		} catch (UnsupportedEncodingException e) {
 			throw new RecurlyAPIException("Invalid Request", e);
 		}
