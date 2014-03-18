@@ -4,9 +4,9 @@
   <artifactId>recurly-java-library</artifactId>
   <version>0.2.27-SNAPSHOT</version>
   <versioning>
-    <versions>
-      <version>0.2.27-SNAPSHOT</version>
-    </versions>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
     <lastUpdated>20140318010705</lastUpdated>
   </versioning>
 </metadata>
