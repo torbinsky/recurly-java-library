@@ -167,11 +167,11 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 
 	@Override
-	public Subscriptions getAccountSubscriptions(final String accountCode, String status, String apiKey) {
+	public Subscriptions getAccountSubscriptions(final String accountCode, final String status, String apiKey) {
 		return new ThreadScopedAPIClientCall<Subscriptions>(apiKey){
 			@Override
 			Subscriptions doCall() {
-				return keyClient.getAccountSubscriptions(accountCode);
+				return keyClient.getAccountSubscriptions(accountCode, status);
 			}			
 		}.call();
 	}
