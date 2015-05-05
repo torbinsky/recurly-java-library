@@ -27,6 +27,7 @@ import com.github.torbinsky.billing.recurly.model.AddOn;
 import com.github.torbinsky.billing.recurly.model.BillingInfo;
 import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Subscription;
+import com.github.torbinsky.billing.recurly.model.SubscriptionAddOn;
 import com.github.torbinsky.billing.recurly.model.Transaction;
 
 public class TestUtils {
@@ -257,9 +258,9 @@ public class TestUtils {
         sub.setCurrentPeriodEndsAt(DateTime.now());
         sub.setTrialStartedAt(DateTime.now());
         sub.setTrialEndsAt(DateTime.now());
-        final List<AddOn> addOns = new ArrayList<AddOn>();
+        final List<SubscriptionAddOn> addOns = new ArrayList<SubscriptionAddOn>();
         for (int i = 0; i < randomInteger(10); i++) {
-            addOns.add(createRandomAddOn());
+            addOns.add(createRandomSubscriptionAddOn());
         }
         sub.setAddOns(addOns);
 
@@ -285,6 +286,15 @@ public class TestUtils {
         return trans;
     }
 
+    public static SubscriptionAddOn createRandomSubscriptionAddOn() {
+        final SubscriptionAddOn addOn = new SubscriptionAddOn();
+        addOn.setAddOnCode(getRandomAlphaNumString(10));
+        addOn.setQuantity(randomInteger(10));
+        addOn.setUnitAmountInCents(randomInteger(10));
+
+        return addOn;
+    }
+    
     /**
      * Creates a random {@link AddOn} for use in Tests.
      *
