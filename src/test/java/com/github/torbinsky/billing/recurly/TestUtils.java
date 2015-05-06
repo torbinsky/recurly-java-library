@@ -29,6 +29,7 @@ import com.github.torbinsky.billing.recurly.model.Plan;
 import com.github.torbinsky.billing.recurly.model.Subscription;
 import com.github.torbinsky.billing.recurly.model.SubscriptionAddOn;
 import com.github.torbinsky.billing.recurly.model.Transaction;
+import com.github.torbinsky.billing.recurly.model.list.SubscriptionAddOns;
 
 public class TestUtils {
 
@@ -258,10 +259,12 @@ public class TestUtils {
         sub.setCurrentPeriodEndsAt(DateTime.now());
         sub.setTrialStartedAt(DateTime.now());
         sub.setTrialEndsAt(DateTime.now());
-        final List<SubscriptionAddOn> addOns = new ArrayList<SubscriptionAddOn>();
+        final List<SubscriptionAddOn> addOnList = new ArrayList<SubscriptionAddOn>();
         for (int i = 0; i < randomInteger(10); i++) {
-            addOns.add(createRandomSubscriptionAddOn());
+        	addOnList.add(createRandomSubscriptionAddOn());
         }
+        SubscriptionAddOns addOns = new SubscriptionAddOns();
+        addOns.setAddOns(addOnList);
         sub.setAddOns(addOns);
 
         //

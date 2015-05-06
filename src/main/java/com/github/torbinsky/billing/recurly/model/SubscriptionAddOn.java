@@ -18,7 +18,7 @@ package com.github.torbinsky.billing.recurly.model;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "subscription_add_on")
+@XmlRootElement(name = "subscription_add_ons")
 public class SubscriptionAddOn extends RecurlyObject {
 
     @XmlElement(name = "add_on_code")

@@ -16,11 +16,11 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.github.torbinsky.billing.recurly.model.list.SubscriptionAddOns;
 
 @XmlRootElement(name = "subscription")
 public class AbstractSubscription extends RecurlyObject {
@@ -34,8 +34,8 @@ public class AbstractSubscription extends RecurlyObject {
     protected Integer quantity;
 
     @XmlElementWrapper(name = "subscription_add_ons")
-    @XmlElement(name = "subscription_add_on")
-    protected List<SubscriptionAddOn> addOns;
+    @XmlElement(name = "subscription_add_ons")
+    protected SubscriptionAddOns addOns;
 
     @XmlElement(name = "plan_code")
     private String planCode;
@@ -64,11 +64,11 @@ public class AbstractSubscription extends RecurlyObject {
         this.quantity = integerOrNull(quantity);
     }
 
-    public List<SubscriptionAddOn> getAddOns() {
+    public SubscriptionAddOns getAddOns() {
         return addOns;
     }
 
-    public void setAddOns(final List<SubscriptionAddOn> addOns) {
+    public void setAddOns(final SubscriptionAddOns addOns) {
         this.addOns = addOns;
     }
 

@@ -19,8 +19,6 @@ package com.github.torbinsky.billing.recurly.model;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.github.torbinsky.billing.recurly.model.SubscriptionUpdate;
-
 public class TestSubscriptionUpdate extends TestModelBase {
 
     @Test(groups = "fast")
@@ -41,6 +39,7 @@ public class TestSubscriptionUpdate extends TestModelBase {
         Assert.assertEquals(subscription.getPlanCode(), "gold");
         Assert.assertEquals(subscription.getUnitAmountInCents(), (Integer) 800);
         Assert.assertEquals(subscription.getQuantity(), (Integer) 1);
-        Assert.assertNull(subscription.getAddOns());
+        Assert.assertNotNull(subscription.getAddOns());
+        Assert.assertTrue(subscription.getAddOns().getAddOns().isEmpty());
     }
 }
