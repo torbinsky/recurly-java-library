@@ -64,8 +64,8 @@ public class TestSubscription extends TestModelBase {
         Assert.assertEquals(subscription.getCurrentPeriodEndsAt(), new DateTime("2010-07-27T07:00:00Z"));
         Assert.assertNull(subscription.getTrialStartedAt(), "");
         Assert.assertNull(subscription.getTrialEndsAt(), "");
-        Assert.assertNotNull(subscription.getAddOns());
-        Assert.assertTrue(subscription.getAddOns().getAddOns().isEmpty());
+        Assert.assertNotNull(subscription.getSubscriptionAddOns());
+        Assert.assertTrue(subscription.getSubscriptionAddOns().getObjects().isEmpty());
 
         // Verify nested attributes
         Assert.assertEquals(subscription.getAccount().getHref(), "https://api.recurly.com/v2/accounts/1");
@@ -75,7 +75,7 @@ public class TestSubscription extends TestModelBase {
     @Test(groups = "fast")
     public void testWithAddOnDeserialization() throws Exception {
         // See http://docs.recurly.com/api/subscriptions
-        final String subscriptionData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        String subscriptionData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                                         "<subscription href=\"https://api.recurly.com/v2/subscriptions/44f83d7cba354d5b84812419f923ea96\">\n" +
                                         "  <account href=\"https://api.recurly.com/v2/accounts/1\"/>\n" +
                                         "  <plan href=\"https://api.recurly.com/v2/plans/gold\">\n" +
@@ -94,18 +94,26 @@ public class TestSubscription extends TestModelBase {
                                         "  <current_period_ends_at type=\"datetime\">2010-07-27T07:00:00Z</current_period_ends_at>\n" +
                                         "  <trial_started_at nil=\"nil\"></trial_started_at>\n" +
                                         "  <trial_ends_at nil=\"nil\"></trial_ends_at>\n" +
-                                        "  <subscription_add_ons type=\"array\">\n" +
-                                        "  <subscription_add_on>\n" +
-                                        "  <add_on_code>ipaddresses</add_on_code>\n" +
-                                        "  <quantity>10</quantity>\n" +
-                                        "  <unit_amount_in_cents>150</unit_amount_in_cents>\n" +
-                                        "  </subscription_add_on>\n" +
-                                        "  </subscription_add_ons>\n" +
+										"  <subscription_add_ons type=\"array\">\n" +
+										"  <subscription_add_on>\n" +
+										"  <add_on_code>FEATURE1</add_on_code>\n" +
+										"  <unit_amount_in_cents type=\"integer\">599</unit_amount_in_cents>\n" +
+										"  <quantity type=\"integer\">1</quantity>\n" +
+										"  </subscription_add_on>\n" +
+										"  <subscription_add_on>\n" +
+										"  <add_on_code>FEATURE2</add_on_code>\n" +
+										"  <unit_amount_in_cents type=\"integer\">1099</unit_amount_in_cents>\n" +
+										"  <quantity type=\"integer\">1</quantity>\n" +
+										"  </subscription_add_on>\n" +
+										"  </subscription_add_ons>\n" +
                                         "  <a name=\"cancel\" href=\"https://api.recurly.com/v2/subscriptions/44f83d7cba354d5b84812419f923ea96/cancel\" method=\"put\"/>\n" +
                                         "  <a name=\"terminate\" href=\"https://api.recurly.com/v2/subscriptions/44f83d7cba354d5b84812419f923ea96/terminate\" method=\"put\"/>\n" +
                                         "  <a name=\"postpone\" href=\"https://api.recurly.com/v2/subscriptions/44f83d7cba354d5b84812419f923ea96/postpone\" method=\"put\"/>\n" +
                                         "</subscription>";
 
+        // PARSE OUT subscription_add_on type to match 
+        subscriptionData = subscriptionData.replaceAll("<(subscription_add_on)>([\\s\\S]+?)<quantity(.*?)>([\\s\\S]+?)</(\\1)>", "<$1>$2<quantity>$4</$1>");
+        subscriptionData = subscriptionData.replaceAll("<(subscription_add_on)>([\\s\\S]+?)<unit_amount_in_cents(.*?)>([\\s\\S]+?)</(\\1)>", "<$1>$2<unit_amount_in_cents>$4</$1>");
         final Subscription subscription = xmlMapper.readValue(subscriptionData, Subscription.class);
         Assert.assertEquals(subscription.getUuid(), "44f83d7cba354d5b84812419f923ea96");
         Assert.assertEquals(subscription.getState(), "active");
@@ -119,9 +127,9 @@ public class TestSubscription extends TestModelBase {
         Assert.assertEquals(subscription.getCurrentPeriodEndsAt(), new DateTime("2010-07-27T07:00:00Z"));
         Assert.assertNull(subscription.getTrialStartedAt(), "");
         Assert.assertNull(subscription.getTrialEndsAt(), "");
-        Assert.assertNotNull(subscription.getAddOns());
-        Assert.assertEquals(subscription.getAddOns().getAddOns().size(), 1);
-		
+        Assert.assertNotNull(subscription.getSubscriptionAddOns());
+        Assert.assertEquals(subscription.getSubscriptionAddOns().getObjects().size(), 2);
+        
         // Verify nested attributes
         Assert.assertEquals(subscription.getAccount().getHref(), "https://api.recurly.com/v2/accounts/1");
         Assert.assertEquals(subscription.getAccount().getAccountCode(), "1");

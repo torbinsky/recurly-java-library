@@ -24,10 +24,10 @@ public class SubscriptionAddOn extends RecurlyObject {
     @XmlElement(name = "add_on_code")
     private String addOnCode;
     
-    @XmlElement(name = "unit_amount_in_cents")
+    @XmlElement(name = "unit_amount_in_cents", type = Integer.class)
 	private Integer unitAmountInCents;
 
-    @XmlElement(name = "quantity")
+    @XmlElement(name = "quantity", type = Integer.class)
 	private Integer quantity;
 
 	public String getAddOnCode() {

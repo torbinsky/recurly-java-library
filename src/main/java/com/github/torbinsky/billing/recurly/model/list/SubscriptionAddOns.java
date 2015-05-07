@@ -32,10 +32,6 @@ public class SubscriptionAddOns extends RecurlyObjects<SubscriptionAddOn> {
 
 	@Override
 	public List<SubscriptionAddOn> getObjects() {
-		return getAddOns();
-	}
-
-	public List<SubscriptionAddOn> getAddOns() {
 		return addOns;
 	}
 

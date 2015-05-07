@@ -30,7 +30,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -469,6 +468,9 @@ public abstract class RecurlyClientBase {
 	protected <T> List<T> deserialize(List<String> data, @Nullable final Class<T> clazz) throws JsonParseException, JsonMappingException, IOException {
 		List<T> results = new ArrayList<>();
 		for (String dataItem : data) {
+			// EM - the jackson xml parser messes up and reads quantity/unit_amount as null with "type" is included in these fields so parse it out (it's ugly/hacky but nothing else seems to work)
+			dataItem = dataItem.replaceAll("<(subscription_add_on)>([\\s\\S]+?)<quantity(.*?)>([\\s\\S]+?)</(\\1)>", "<$1>$2<quantity>$4</$1>");
+			dataItem = dataItem.replaceAll("<(subscription_add_on)>([\\s\\S]+?)<unit_amount_in_cents(.*?)>([\\s\\S]+?)</(\\1)>", "<$1>$2<unit_amount_in_cents>$4</$1>");
 			T obj = xmlMapper.readValue(dataItem, clazz);
 			results.add(obj);
 		}

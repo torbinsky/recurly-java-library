@@ -187,7 +187,7 @@ public class Subscription extends AbstractSubscription {
         sb.append(", currentPeriodEndsAt=").append(currentPeriodEndsAt);
         sb.append(", trialStartedAt=").append(trialStartedAt);
         sb.append(", trialEndsAt=").append(trialEndsAt);
-        sb.append(", addOns=").append(addOns);
+        sb.append(", addOns=").append(subscriptionAddOns);
         sb.append('}');
         return sb.toString();
     }
@@ -209,7 +209,7 @@ public class Subscription extends AbstractSubscription {
         if (activatedAt != null ? !activatedAt.equals(that.activatedAt) : that.activatedAt != null) {
             return false;
         }
-        if (addOns != null ? !addOns.equals(that.addOns) : that.addOns != null) {
+        if (subscriptionAddOns != null ? !subscriptionAddOns.equals(that.subscriptionAddOns) : that.subscriptionAddOns != null) {
             return false;
         }
         if (canceledAt != null ? !canceledAt.equals(that.canceledAt) : that.canceledAt != null) {
@@ -270,7 +270,7 @@ public class Subscription extends AbstractSubscription {
         result = 31 * result + (currentPeriodEndsAt != null ? currentPeriodEndsAt.hashCode() : 0);
         result = 31 * result + (trialStartedAt != null ? trialStartedAt.hashCode() : 0);
         result = 31 * result + (trialEndsAt != null ? trialEndsAt.hashCode() : 0);
-        result = 31 * result + (addOns != null ? addOns.hashCode() : 0);
+        result = 31 * result + (subscriptionAddOns != null ? subscriptionAddOns.hashCode() : 0);
         return result;
     }
 

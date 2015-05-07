@@ -265,7 +265,7 @@ public class TestUtils {
         }
         SubscriptionAddOns addOns = new SubscriptionAddOns();
         addOns.setAddOns(addOnList);
-        sub.setAddOns(addOns);
+        sub.setSubscriptionAddOns(addOns);
 
         //
         return sub;

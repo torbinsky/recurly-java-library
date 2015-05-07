@@ -35,7 +35,7 @@ public class AbstractSubscription extends RecurlyObject {
 
     @XmlElementWrapper(name = "subscription_add_ons")
     @XmlElement(name = "subscription_add_ons")
-    protected SubscriptionAddOns addOns;
+    protected SubscriptionAddOns subscriptionAddOns;
 
     @XmlElement(name = "plan_code")
     private String planCode;
@@ -64,12 +64,12 @@ public class AbstractSubscription extends RecurlyObject {
         this.quantity = integerOrNull(quantity);
     }
 
-    public SubscriptionAddOns getAddOns() {
-        return addOns;
+    public SubscriptionAddOns getSubscriptionAddOns() {
+        return subscriptionAddOns;
     }
 
-    public void setAddOns(final SubscriptionAddOns addOns) {
-        this.addOns = addOns;
+    public void setSubscriptionAddOns(final SubscriptionAddOns subscriptionAddOns) {
+        this.subscriptionAddOns = subscriptionAddOns;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class AbstractSubscription extends RecurlyObject {
 
         final AbstractSubscription that = (AbstractSubscription) o;
 
-        if (addOns != null ? !addOns.equals(that.addOns) : that.addOns != null) {
+        if (subscriptionAddOns != null ? !subscriptionAddOns.equals(that.subscriptionAddOns) : that.subscriptionAddOns != null) {
             return false;
         }
         if (planCode != null ? !planCode.equals(that.planCode) : that.planCode != null) {
@@ -103,7 +103,7 @@ public class AbstractSubscription extends RecurlyObject {
     public int hashCode() {
         int result = unitAmountInCents != null ? unitAmountInCents.hashCode() : 0;
         result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
-        result = 31 * result + (addOns != null ? addOns.hashCode() : 0);
+        result = 31 * result + (subscriptionAddOns != null ? subscriptionAddOns.hashCode() : 0);
         result = 31 * result + (planCode != null ? planCode.hashCode() : 0);
         return result;
     }
