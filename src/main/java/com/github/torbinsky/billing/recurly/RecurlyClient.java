@@ -45,6 +45,7 @@ import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
 import com.github.torbinsky.billing.recurly.model.list.RecurlyObjects;
+import com.github.torbinsky.billing.recurly.model.list.Redemptions;
 import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.list.Transactions;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
@@ -446,6 +447,15 @@ public class RecurlyClient extends RecurlyClientBase {
     ///////////////////////////////////////////////////////////////////////////
     // User invoices
 
+    public Redemptions getInvoiceRedemptions(final String invoiceNumber){
+    	try {
+	        return depaginateResults(doGETs(Invoice.INVOICE_RESOURCE + "/" + URLEncoder.encode(invoiceNumber, "UTF-8") + Redemptions.REDEMPTIONS_RESOURCE,
+	        		Redemptions.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
+    }
+    
     /**
      * Lookup an account's invoices
      * <p/>

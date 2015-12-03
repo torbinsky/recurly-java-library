@@ -30,6 +30,7 @@ import com.github.torbinsky.billing.recurly.model.list.Accounts;
 import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
+import com.github.torbinsky.billing.recurly.model.list.Redemptions;
 import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.list.Transactions;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
@@ -55,6 +56,16 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 		keyClient = client;
 	}
 	
+	@Override
+	public Redemptions getInvoiceRedemptions(final String invoiceNumber, String apiKey) {
+		return new ThreadScopedAPIClientCall<Redemptions>(apiKey){
+			@Override
+			Redemptions doCall() {
+				return keyClient.getInvoiceRedemptions(invoiceNumber);
+			}			
+		}.call();
+	}
+
 	@Override
 	public Account createAccount(final XmlPayloadMap<?, ?> account, String apiKey) {
 		return new ThreadScopedAPIClientCall<Account>(apiKey){
