@@ -24,7 +24,7 @@
     <groupId>com.github.torbinsky.billing</groupId>
     <artifactId>recurly-java-library</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.35-SNAPSHOT</version>
+    <version>0.2.38-SNAPSHOT</version>
     <name>Recurly Java library</name>
     <description>Java library for Recurly</description>
     <url>http://github.com/torbinsky/recurly-java-library</url>
@@ -69,7 +69,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Core only -->
         <jackson.version>2.2.3</jackson.version>
-        <jackson.joda.version>2.2.4</jackson.joda.version>
+        <jackson.joda.version>2.2.3</jackson.joda.version>
         <guava.version>14.0.1</guava.version>
         <slf4j.version>1.7.5</slf4j.version>
     </properties>
@@ -251,37 +251,6 @@
                                 <exclude>CREDITS</exclude>
                             </excludes>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>
-                <configuration>
-                    <additionalparam>-quiet</additionalparam>
-                    <!--
-                      | Apple's JVM sometimes requires more memory
-                    -->
-                    <additionalJOption>-J-Xmx1024m</additionalJOption>
-                    <source>1.7</source>
-                    <encoding>UTF-8</encoding>
-                    <maxmemory>2g</maxmemory>
-                    <links>
-                        <link>http://commons.apache.org/lang/api/</link>
-                        <link>http://download.oracle.com/javase/6/docs/api/</link>
-                    </links>
-                    <linksource>true</linksource>
-                    <show>public</show>
-                    <!-- That's for https://github.com/github/maven-plugins/issues/2 -->
-                    <splitindex>true</splitindex>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
