@@ -32,6 +32,7 @@ import com.github.torbinsky.billing.recurly.model.list.Accounts;
 import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
+import com.github.torbinsky.billing.recurly.model.list.Redemptions;
 import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.list.Transactions;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
@@ -332,6 +333,8 @@ public interface KeyAgnosticRecurlyClient {
 	 * @return
 	 */
     public Invoice getInvoice(final String invoiceNumber, String apiKey);
+    
+    public Redemptions getInvoiceRedemptions(final String invoiceNumber, String apiKey);
 
 
 	/**

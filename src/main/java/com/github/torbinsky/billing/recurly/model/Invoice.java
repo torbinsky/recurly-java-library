@@ -17,7 +17,6 @@
 
 package com.github.torbinsky.billing.recurly.model;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.torbinsky.billing.recurly.model.list.Adjustments;
+import com.github.torbinsky.billing.recurly.model.list.Transactions;
 
 @XmlRootElement(name = "invoice")
 public class Invoice extends RecurlyObject {
@@ -77,11 +78,11 @@ public class Invoice extends RecurlyObject {
 
     @XmlElementWrapper(name = "line_items")
     @XmlElement(name = "adjustment")
-    private List<Adjustment> adjustments;
+    private Adjustments lineItems;
 
     @XmlElementWrapper(name = "transactions")
     @XmlElement(name = "transaction")
-    private List<Transaction> transactions;
+    private Transactions transactions;
 
     public Account getAccount() {
         return account;
@@ -171,27 +172,27 @@ public class Invoice extends RecurlyObject {
         this.createdAt = dateTimeOrNull(createdAt);
     }
 
-    public List<Adjustment> getLineItems() {
-        return adjustments;
+    public Adjustments getLineItems() {
+        return lineItems;
     }
 
-    public void setLineItems(final List<Adjustment> lineItems) {
-        this.adjustments = lineItems;
+    public void setLineItems(final Adjustments lineItems) {
+        this.lineItems = lineItems;
     }
     
-    public List<Adjustment> getAdjustments() {
-		return adjustments;
+    public Adjustments getAdjustments() {
+		return lineItems;
 	}
 
-	public void setAdjustments(List<Adjustment> adjustments) {
-		this.adjustments = adjustments;
+	public void setAdjustments(Adjustments adjustments) {
+		this.lineItems = adjustments;
 	}
 
-	public List<Transaction> getTransactions() {
+	public Transactions getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(final List<Transaction> transactions) {
+    public void setTransactions(final Transactions transactions) {
         this.transactions = transactions;
     }
 
@@ -210,7 +211,7 @@ public class Invoice extends RecurlyObject {
         sb.append(", totalInCents=").append(totalInCents);
         sb.append(", currency='").append(currency).append('\'');
         sb.append(", createdAt=").append(createdAt);
-        sb.append(", lineItems=").append(adjustments);
+        sb.append(", lineItems=").append(lineItems);
         sb.append(", transactions=").append(transactions);
         sb.append('}');
         return sb.toString();
@@ -239,7 +240,7 @@ public class Invoice extends RecurlyObject {
         if (invoiceNumber != null ? !invoiceNumber.equals(invoice.invoiceNumber) : invoice.invoiceNumber != null) {
             return false;
         }
-        if (adjustments != null ? !adjustments.equals(invoice.adjustments) : invoice.adjustments != null) {
+        if (lineItems != null ? !lineItems.equals(invoice.lineItems) : invoice.lineItems != null) {
             return false;
         }
         if (poNumber != null ? !poNumber.equals(invoice.poNumber) : invoice.poNumber != null) {
@@ -283,7 +284,7 @@ public class Invoice extends RecurlyObject {
         result = 31 * result + (totalInCents != null ? totalInCents.hashCode() : 0);
         result = 31 * result + (currency != null ? currency.hashCode() : 0);
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
-        result = 31 * result + (adjustments != null ? adjustments.hashCode() : 0);
+        result = 31 * result + (lineItems != null ? lineItems.hashCode() : 0);
         result = 31 * result + (transactions != null ? transactions.hashCode() : 0);
         return result;
     }
@@ -298,7 +299,7 @@ public class Invoice extends RecurlyObject {
 		if(this.href != null){
 			Matcher m = INVOICE_CODE_PATTERN.matcher(this.href); 
 			if(m.find()){
-				setInvoiceNumber(m.group(1)); 
+				setUuid(m.group(1)); 
 			}
 		}
 	}

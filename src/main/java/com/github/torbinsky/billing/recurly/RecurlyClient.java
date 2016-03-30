@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,7 @@ import com.github.torbinsky.billing.recurly.model.list.Adjustments;
 import com.github.torbinsky.billing.recurly.model.list.Invoices;
 import com.github.torbinsky.billing.recurly.model.list.Plans;
 import com.github.torbinsky.billing.recurly.model.list.RecurlyObjects;
+import com.github.torbinsky.billing.recurly.model.list.Redemptions;
 import com.github.torbinsky.billing.recurly.model.list.Subscriptions;
 import com.github.torbinsky.billing.recurly.model.list.Transactions;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
@@ -446,6 +449,15 @@ public class RecurlyClient extends RecurlyClientBase {
     ///////////////////////////////////////////////////////////////////////////
     // User invoices
 
+    public Redemptions getInvoiceRedemptions(final String invoiceNumber){
+    	try {
+	        return depaginateResults(doGETs(Invoice.INVOICE_RESOURCE + "/" + URLEncoder.encode(invoiceNumber, "UTF-8") + Redemptions.REDEMPTIONS_RESOURCE,
+	        		Redemptions.class));
+		} catch (UnsupportedEncodingException e) {
+			throw new RecurlyAPIException("Invalid Request", e);
+		}
+    }
+    
     /**
      * Lookup an account's invoices
      * <p/>
@@ -455,10 +467,17 @@ public class RecurlyClient extends RecurlyClientBase {
      * @param stateQuery the invoice state (default 'all')
      * @return the invoices associated with this account on success, null otherwise
      */
-    public Invoices getAccountInvoices(final String accountCode, String stateQuery) {
+    public Invoices getAccountInvoices(final String accountCode, @Nullable String stateQuery) {
     	try {
-	        return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + Invoices.INVOICES_RESOURCE,
-	        			 "&state="+stateQuery,
+    	    // TW: Fix for a Recurly regression that started Feb. 3rd. It appears their endpoint is no longer accepting the 'all' state as a filter.
+	        final String paramString;
+	        if(stateQuery != null){
+	            paramString = "&state="+stateQuery;
+	        }else{
+	            paramString = null;
+	        }
+            return depaginateResults(doGETs(Accounts.ACCOUNTS_RESOURCE + "/" + URLEncoder.encode(accountCode, "UTF-8") + Invoices.INVOICES_RESOURCE,
+	        			 paramString,
 	                     Invoices.class));
 		} catch (UnsupportedEncodingException e) {
 			throw new RecurlyAPIException("Invalid Request", e);
@@ -495,7 +514,7 @@ public class RecurlyClient extends RecurlyClientBase {
      * @return the invoices associated with this account on success, null otherwise
      */
     public Invoices getAccountInvoices(final String accountCode) {
-    		return getAccountInvoices(accountCode, "all");
+    		return getAccountInvoices(accountCode, null);
     }
 
 	///////////////////////////////////////////////////////////////////////////

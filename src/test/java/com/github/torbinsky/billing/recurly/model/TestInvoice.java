@@ -78,13 +78,13 @@ public class TestInvoice extends TestModelBase {
         Assert.assertEquals(invoice.getCurrency(), "USD");
         Assert.assertEquals(invoice.getCreatedAt(), new DateTime("2011-08-25T12:00:00Z"));
         Assert.assertNotNull(invoice.getLineItems());
-        Assert.assertEquals(invoice.getLineItems().size(), 1);
+        Assert.assertEquals(invoice.getLineItems().getObjects().size(), 1);
 
-        final Adjustment adjustment = invoice.getLineItems().get(0);
+        final Adjustment adjustment = invoice.getLineItems().getObjects().get(0);
         Assert.assertEquals(adjustment.getDescription(), "Charge for extra bandwidth");
         Assert.assertEquals((int) adjustment.getTotalInCents(), 5000);
         Assert.assertEquals(adjustment.getStartDate(), new DateTime("2011-08-31T03:30:00Z"));
 
-        Assert.assertNull(invoice.getTransactions());
+        Assert.assertEquals(invoice.getTransactions().getObjects().size(), 0);
     }
 }

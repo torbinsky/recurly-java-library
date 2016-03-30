@@ -83,7 +83,7 @@ public class TestInvoices extends TestModelBase {
         Assert.assertEquals(invoice.getCurrency(), "USD");
         Assert.assertEquals(invoice.getCreatedAt(), new DateTime("2011-08-25T12:00:00Z"));
         Assert.assertNotNull(invoice.getLineItems());
-        Assert.assertEquals(invoice.getLineItems().size(), 1);
-        Assert.assertNull(invoice.getTransactions());
+        Assert.assertEquals(invoice.getLineItems().getObjects().size(), 1);
+        Assert.assertEquals(invoice.getTransactions().getObjects().size(), 0);
     }
 }
