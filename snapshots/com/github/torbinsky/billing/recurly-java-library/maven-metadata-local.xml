@@ -2,20 +2,10 @@
 <metadata>
   <groupId>com.github.torbinsky.billing</groupId>
   <artifactId>recurly-java-library</artifactId>
-  <version>0.2.27-SNAPSHOT</version>
   <versioning>
     <versions>
-      <version>0.2.27-SNAPSHOT</version>
-      <version>0.2.28-SNAPSHOT</version>
-      <version>0.2.29-SNAPSHOT</version>
-      <version>0.2.30-SNAPSHOT</version>
-      <version>0.2.31-SNAPSHOT</version>
-      <version>0.2.32-SNAPSHOT</version>
-      <version>0.2.33-SNAPSHOT</version>
-      <version>0.2.34-SNAPSHOT</version>
-      <version>0.2.35-SNAPSHOT</version>
-      <version>0.2.38-SNAPSHOT</version>
+      <version>0.2.40-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20160212003530</lastUpdated>
+    <lastUpdated>20160330232539</lastUpdated>
   </versioning>
 </metadata>
