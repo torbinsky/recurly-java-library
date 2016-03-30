@@ -15,6 +15,8 @@
  */
 package com.github.torbinsky.billing.recurly;
 
+import java.security.NoSuchAlgorithmException;
+
 import com.github.torbinsky.billing.recurly.model.Account;
 import com.github.torbinsky.billing.recurly.model.AddOn;
 import com.github.torbinsky.billing.recurly.model.Adjustment;

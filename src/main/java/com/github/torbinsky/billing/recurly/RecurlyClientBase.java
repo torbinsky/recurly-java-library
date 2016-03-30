@@ -18,6 +18,7 @@ package com.github.torbinsky.billing.recurly;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
+import javax.net.ssl.SSLContext;
 import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sun.security.ssl.SSLContextImpl.TLS12Context;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -502,6 +506,11 @@ public abstract class RecurlyClientBase {
 		final AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
 		builder.setMaximumConnectionsPerHost(-1);
 		builder.setUserAgent("");
+		try {
+			builder.setSSLContext(SSLContext.getInstance("TLSv1.2"));
+		} catch (NoSuchAlgorithmException e) {
+			throw new RecurlyException(e);
+		}
 		return new AsyncHttpClient(builder.build());
 	}
 
