@@ -18,6 +18,7 @@ package com.github.torbinsky.billing.recurly;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import sun.security.ssl.SSLContextImpl.TLS12Context;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -507,8 +506,10 @@ public abstract class RecurlyClientBase {
 		builder.setMaximumConnectionsPerHost(-1);
 		builder.setUserAgent("");
 		try {
-			builder.setSSLContext(SSLContext.getInstance("TLSv1.2"));
-		} catch (NoSuchAlgorithmException e) {
+			SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+			sslContext.init(null, null, null); // SSLContext must be initialized but initializing with all parameters as null will force it to use defaults
+			builder.setSSLContext(sslContext);
+		} catch (NoSuchAlgorithmException | KeyManagementException e) {
 			throw new RecurlyException(e);
 		}
 		return new AsyncHttpClient(builder.build());
