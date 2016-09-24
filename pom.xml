@@ -157,9 +157,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.ning.maven.plugins</groupId>
-                <artifactId>maven-duplicate-finder-plugin</artifactId>
-                <version>1.0.3</version>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+                <version>1.2.1</version>
                 <configuration>
                     <failBuildInCaseOfConflict>true</failBuildInCaseOfConflict>
                 </configuration>
