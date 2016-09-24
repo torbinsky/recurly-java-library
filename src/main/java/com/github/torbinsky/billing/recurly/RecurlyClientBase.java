@@ -28,8 +28,17 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
 import javax.xml.bind.DatatypeConverter;
 
+import org.asynchttpclient.AsyncCompletionHandler;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.AsyncHttpClientConfig;
+import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.DefaultAsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.RequestBuilder;
+import org.asynchttpclient.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +58,9 @@ import com.github.torbinsky.billing.recurly.exception.RecurlyException;
 import com.github.torbinsky.billing.recurly.exception.RecurlySerializationException;
 import com.github.torbinsky.billing.recurly.model.RecurlyObject;
 import com.github.torbinsky.billing.recurly.serialize.XmlPayloadMap;
-import com.ning.http.client.AsyncCompletionHandler;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
-import com.ning.http.client.AsyncHttpClientConfig;
-import com.ning.http.client.Response;
+
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 
 /**
  * Basic/common client features such as managing the AsyncHttpClient etc...
@@ -153,8 +160,9 @@ public abstract class RecurlyClientBase {
 
 	/**
 	 * Close the underlying http client
+	 * @throws IOException 
 	 */
-	public synchronized void close() {
+	public synchronized void close() throws IOException {
 		if (client != null) {
 			client.close();
 		}
@@ -312,7 +320,7 @@ public abstract class RecurlyClientBase {
 	protected void doDELETE(final String resource, Map<String,String> queryParameters){
 		BoundRequestBuilder prepareDelete = client.prepareDelete(baseUrl + resource); 
 		for(String key : queryParameters.keySet()){
-			prepareDelete = prepareDelete.addQueryParameter(key, queryParameters.get(key)); 
+			prepareDelete = prepareDelete.addQueryParam(key, queryParameters.get(key)); 
 		}
 		callRecurlySafe(prepareDelete, null, false); 
 	}
@@ -329,7 +337,7 @@ public abstract class RecurlyClientBase {
 		return null;
 	}
 	
-	protected <T> List<T> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder, @Nullable final Class<T> clazz, final boolean parseResult) {
+	protected <T> List<T> callRecurlySafe(final BoundRequestBuilder builder, @Nullable final Class<T> clazz, final boolean parseResult) {
 		List<String> results = callRecurlySafe(builder);
 		if(parseResult){
 			try {
@@ -343,7 +351,7 @@ public abstract class RecurlyClientBase {
 		return null;
 	}
 
-	protected List<String> callRecurlySafe(final AsyncHttpClient.BoundRequestBuilder builder) {
+	protected List<String> callRecurlySafe(final BoundRequestBuilder builder) {
 		final String requestKey = getApiKey();
 		final RecurlyAPICallResults<String> results = doSinglePageRecurlySafeCall(builder, new RecurlyAPICallResults<String>(), requestKey);
 		while(results.hasNextPage()){
@@ -353,7 +361,7 @@ public abstract class RecurlyClientBase {
 		return results.getResults();
 	}
 	
-	protected RecurlyAPICallResults<String> doSinglePageRecurlySafeCall(final AsyncHttpClient.BoundRequestBuilder builder, final RecurlyAPICallResults<String> pageResults, final String requestKey){
+	protected RecurlyAPICallResults<String> doSinglePageRecurlySafeCall(final BoundRequestBuilder builder, final RecurlyAPICallResults<String> pageResults, final String requestKey){
 		try {
 			final AtomicReference<Throwable> tRef = new AtomicReference<>();
 			RecurlyAPICallResults<String> result = builder.addHeader("Authorization", "Basic " + requestKey).addHeader("Accept", "application/xml")
@@ -406,9 +414,6 @@ public abstract class RecurlyClientBase {
 			// ---> End hacky workaround <---
 			
 			return result;
-		} catch (IOException e) {
-			log.warn("Error while calling Recurly", e);
-			throw new RecurlyAPIException("Error while calling Recurly", e);
 		} catch (ExecutionException e) {
 			Throwable t = e;
 			// Unwrap any of the API exceptions
@@ -498,21 +503,18 @@ public abstract class RecurlyClientBase {
 			}
 		}
 	}
+	
+	public static void main(String[] args) throws InterruptedException, ExecutionException{
+		System.out.println(createHttpClient().prepareGet("https://www.google.ca/?gws_rd=ssl#q=test").execute().get().getResponseBody());
+	}
 
-	protected AsyncHttpClient createHttpClient() {
+	protected static AsyncHttpClient createHttpClient() {
 		// Don't limit the number of connections per host
 		// See https://github.com/ning/async-http-client/issues/issue/28
-		final AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
-		builder.setMaximumConnectionsPerHost(-1);
+		final DefaultAsyncHttpClientConfig.Builder builder = new DefaultAsyncHttpClientConfig.Builder();
+		builder.setMaxConnectionsPerHost(-1);
 		builder.setUserAgent("");
-		try {
-			SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-			sslContext.init(null, null, null); // SSLContext must be initialized but initializing with all parameters as null will force it to use defaults
-			builder.setSSLContext(sslContext);
-		} catch (NoSuchAlgorithmException | KeyManagementException e) {
-			throw new RecurlyException(e);
-		}
-		return new AsyncHttpClient(builder.build());
+		return new DefaultAsyncHttpClient(builder.build());
 	}
 
 	protected class RecurlyAPICallResults<T> {
