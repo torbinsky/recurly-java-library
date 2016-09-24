@@ -15,6 +15,7 @@
  */
 package com.github.torbinsky.billing.recurly;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import com.github.torbinsky.billing.recurly.model.Account;
@@ -522,7 +523,7 @@ public class KeyAgnosticRecurlyClientImpl implements KeyAgnosticRecurlyClient {
 	}
 	
 	@Override
-	public synchronized void close() {
+	public synchronized void close() throws IOException {
 		keyClient.close();
 	}
 
